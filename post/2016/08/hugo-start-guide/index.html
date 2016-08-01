@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>about post | babifarm.com</title>
+    <title>hugo 初体验 | babifarm.com</title>
   </head>
   <body>
     <div id="wrap">
@@ -34,7 +34,7 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>about post</h1>
+      <h1>hugo 初体验</h1>
       <div class="article-meta">
         <span class="posttime">2016/08/01</span>
         
@@ -42,7 +42,7 @@
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/hugo"><span></span>hugo</a>
     </li>
     
   </ul>
@@ -67,16 +67,65 @@
   <div class="content">
     
 
-<h3 id="post-about">post about</h3>
+<h3 id="hugo-start">hugo start</h3>
 
-<p>test</p>
+<h4 id="hugo安装">hugo安装：</h4>
+
+<ol>
+<li><p>下载：
+<a href="https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz">https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz</a></p></li>
+
+<li><p>安装：
+tar xzvf hugo_0.16_linux-64bit.tgz  -C hugo_0.16_linux</p></li>
+</ol>
+
+<h4 id="hugo使用">hugo使用：</h4>
+
+<ol>
+<li><p>建网站：</p>
+
+<p>$ hugo new site mysite
+$ cd mysite
+在该目录下你可以看到以下几个目录和 config.toml 文件</p>
 
 <ul>
-<li>abc</li>
-<li>efg</li>
-<li>hij</li>
-<li>创建新页面</li>
+<li>▸ archetypes/</li>
+<li>▸ content/</li>
+<li>▸ layouts/</li>
+<li>▸ static/</li>
+<li>config.toml</li>
 </ul>
+
+<p>config.toml 是网站的配置文件，包括 baseurl , title , copyright 等等网站参数。
+这几个文件夹的作用分别是：</p>
+
+<ul>
+<li>archetypes：包括内容类型，在创建新内容时自动生成内容的配置</li>
+<li>content：包括网站内容，全部使用markdown格式</li>
+<li>layouts：包括了网站的模版，决定内容如何呈现</li>
+<li>static：包括了css, js, fonts, media等，决定网站的外观</li>
+</ul></li>
+
+<li><p>创建新页面：</p>
+
+<p>$ hugo new about.md
+相关操作都在mysite目录下，否则会报错；
+进入 content/ 文件夹可以看到，此时多了一个markdown格式的文件 about.md ，打开文件可以看到时间和文件名等信息已经自动加到文件开头，包括创建时间，页面名，是否为草稿等。</p></li>
+
+<li><p>下载主题：</p>
+
+<p>$  git clone <a href="https://github.com/spf13/hyde.git">https://github.com/spf13/hyde.git</a></p></li>
+
+<li><p>运行Hugo:</p>
+
+<p>$ hugo server -t hyde &ndash;buildDrafts  &ndash;verbose</p>
+
+<p>-t 参数的意思是使用hyde主题渲染我们的页面，注意到 about.md 目前是作为草稿，即 draft 参数设置为 true ，运行Hugo时要加上 &ndash;buildDrafts 参数才会生成被标记为草稿的页面。The “&ndash;verbose” flag gives extra information that will be helpful when we build the template</p></li>
+
+<li><p>在浏览器查看：</p>
+
+<p><a href="http://localhost:1313，就可以看到我们刚刚创建的页面。">http://localhost:1313，就可以看到我们刚刚创建的页面。</a></p></li>
+</ol>
 
   </div>
   <footer>
@@ -86,7 +135,7 @@
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/hugo"><span></span>hugo</a>
     </li>
     
   </ul>
@@ -110,10 +159,15 @@
       
       <div id="pagenavigation-next-prev">
         
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/about-post/">about post</a>
+        </div>
+        
         
         <div id="pagenavigation-prev">
           <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/hugo-start-guide/">hugo 初体验</a>
+          <a href="http://babifarm.com/post/2016/08/hosting-github-pages/">github pages部署个人网站</a>
         </div>
         
       </div>

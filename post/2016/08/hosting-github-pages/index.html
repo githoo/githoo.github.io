@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>about post | babifarm.com</title>
+    <title>github pages部署个人网站 | babifarm.com</title>
   </head>
   <body>
     <div id="wrap">
@@ -34,7 +34,7 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>about post</h1>
+      <h1>github pages部署个人网站</h1>
       <div class="article-meta">
         <span class="posttime">2016/08/01</span>
         
@@ -42,7 +42,7 @@
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/hugo"><span></span>hugo</a>
     </li>
     
   </ul>
@@ -67,16 +67,115 @@
   <div class="content">
     
 
-<h3 id="post-about">post about</h3>
+<h4 id="hugo和github整合部署个人网站步骤说明">hugo和github整合部署个人网站步骤说明</h4>
 
-<p>test</p>
+<p>Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。</p>
 
-<ul>
-<li>abc</li>
-<li>efg</li>
-<li>hij</li>
-<li>创建新页面</li>
-</ul>
+<p>创建两个单独的git仓库repo：</p>
+
+<pre><code>在Github上创建repo &lt;your-project&gt;-hugo，托管Hugo的输入文件。 
+创建repo &lt;username&gt;.github.io，用于托管public/文件夹。
+
+注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。
+</code></pre>
+
+<p>clone your-project</p>
+
+<pre><code>$ git clone &lt;&lt;your-project&gt;-hugo-url&gt;
+eg: git clone https://github.com/&lt;username&gt;/&lt;your-project&gt;-hugo.git
+</code></pre>
+
+<p>进入your-project 目录</p>
+
+<pre><code>$ cd &lt;your-project&gt;-hugo
+</code></pre>
+
+<p>删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心）</p>
+
+<pre><code>$ rm -rf public
+</code></pre>
+
+<p>把public/目录添加为submodule 与<username>.github.io同步</p>
+
+<pre><code>$ git submodule add git@github.com:&lt;username&gt;/&lt;username&gt;.github.io.git public
+
+eg:git submodule  add https://github.com/&lt;username&gt;/&lt;username&gt;.github.io.git public
+</code></pre>
+
+<p>添加.gitignore文件，文件中写public/，在同步<your-project>-hugo时会忽略public文件夹</p>
+
+<pre><code>vim  .gitignore
+public/
+</code></pre>
+
+<p>部署脚本，方便提交github和部署网站： deploy.sh</p>
+
+<pre><code>```
+    #!/bin/bash
+    source /etc/profile;
+    echo -e &quot;\033[0;32mDeploying updates to GitHub...\033[0m&quot;
+
+    msg=&quot;rebuilding site `date`&quot;
+
+    echo $msg
+
+    if [ $# -eq 1 ]
+      then msg=&quot;$1&quot;
+    fi
+
+    # Push Hugo content 
+    git add -A
+    git commit -m &quot;$msg&quot;
+    git push origin master
+
+
+    # Build the project. 
+    hugo  # if using a theme, replace by `hugo -t &lt;yourtheme&gt;`
+
+    # Go To Public folder
+    cd public
+    # update 
+    git pull
+    # Add changes to git.
+    git add -A
+
+    # Commit changes.
+
+    git commit -m &quot;$msg&quot;
+
+    # Push source and build repos.
+    git push origin master
+
+    # Come Back
+    cd ..
+```
+</code></pre>
+
+<p>部署系统：</p>
+
+<pre><code>执行deploy.sh，浏览http://username.github.io/，查看效果。
+每次更新网站或者写了新文章，只需要运行./deploy.sh 发布即可。
+</code></pre>
+
+<p>Github pages域名绑定：</p>
+
+<p>自定义域名（个人域名）绑定，获取github的个人网站的ip点：</p>
+
+<pre><code>$ ping &lt;username&gt;.github.io
+</code></pre>
+
+<p>去你的域名管理界面增加上两条A记录</p>
+
+<pre><code>分别是www和@，记录指向http://&lt;username&gt;.github.io/ 的ip地址，也需要等一小会儿生效。
+</code></pre>
+
+<p>github-settings输入自定义域名：</p>
+
+<pre><code>https://github.com/githoo/githoo.github.io/settings
+Custom domain : your-website.com
+
+或者在&lt;username&gt;.github.io repo的跟目录下添加CNAME文件，文件里写上你的域名，不用加http://的开头。
+</code></pre>
 
   </div>
   <footer>
@@ -86,7 +185,7 @@
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/hugo"><span></span>hugo</a>
     </li>
     
   </ul>
@@ -110,11 +209,11 @@
       
       <div id="pagenavigation-next-prev">
         
-        
-        <div id="pagenavigation-prev">
-          <span class="pagenav-label">Next</span>
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
           <a href="http://babifarm.com/post/2016/08/hugo-start-guide/">hugo 初体验</a>
         </div>
+        
         
       </div>
       
