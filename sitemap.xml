@@ -2,18 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.babifarm.com/</loc>
-    <lastmod>2016-07-30T08:18:17-07:00</lastmod>
+    <loc>http://babifarm.com/</loc>
+    <lastmod>2016-08-01T04:24:16-07:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.babifarm.com/welcome/</loc>
-    <lastmod>2016-07-30T08:18:17-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.babifarm.com/home-test/</loc>
-    <lastmod>2016-07-30T05:47:07-07:00</lastmod>
+    <loc>http://babifarm.com/post/about-post/</loc>
+    <lastmod>2016-08-01T04:24:16-07:00</lastmod>
   </url>
   
 </urlset>
