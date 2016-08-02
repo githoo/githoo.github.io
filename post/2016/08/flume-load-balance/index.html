@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>flume load balance 搭建及验证 | babifarm.com</title>
+  </head>
+  <body>
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>flume load balance 搭建及验证</h1>
+      <div class="article-meta">
+        <span class="posttime">2016/08/02</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/flume"><span></span>flume</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    <p>1、验证说明</p>
+
+<pre><code>数据从客户端发送给服务端，服务端进行负载均衡，发给两个处理节点：
+
+                               |----------&gt;node1----&gt;show
+---test --&gt; client --&gt;server--&gt;|     
+                               |----------&gt;node2----&gt;show
+</code></pre>
+
+<p>2、安装flume:</p>
+
+<pre><code>download ：http://flume.apache.org/download.html
+     tar -xvf apache-flume-1.6.0-bin.tar.gz
+修改conf/flume-env.sh配置文件,设置JAVA_HOME变量
+</code></pre>
+
+<p>3、测试环境：</p>
+
+<pre><code>在一台服务器上进行测试
+</code></pre>
+
+<p>4、相关配置：</p>
+
+<pre><code>在路径conf/simple_load下新建如下文件
+  client.conf
+# Define a memory channel called c1 on a0 
+a0.channels.c1.type = memory 
+a0.channels.c1.capacity = 1000
+a0.channels.c1.transactionCapacity = 100   
+
+
+a0.sources.r1.channels = c1 
+a0.sources.r1.type = netcat
+a0.sources.r1.bind = localhost
+a0.sources.r1.port = 43210
+
+#a0.sinks.k1.type = logger 
+a0.sinks.k1.type = avro   
+a0.sinks.k1.channel = c1 
+a0.sinks.k1.hostname = localhost
+a0.sinks.k1.port = 43211 
+
+a0.channels = c1 
+a0.sources = r1 
+a0.sinks = k1 
+
+server.conf
+#Define a memory channel called c1 on a1 
+a1.channels = c1 
+a1.sources = r1 
+a1.sinks = k1 k2 
+a1.sinkgroups = g1 
+a1.sinkgroups.g1.sinks = k1 k2 
+a1.sinkgroups.g1.processor.type = load_balance 
+a1.sinkgroups.g1.processor.selector = round_robin 
+a1.sinkgroups.g1.processor.backoff = true 
+
+a1.channels.c1.type = memory   
+
+a1.sources.r1.channels = c1 
+a1.sources.r1.type = avro 
+a1.sources.r1.bind = 0.0.0.0 
+a1.sources.r1.port = 43211 
+
+a1.sinks.k1.channel = c1 
+a1.sinks.k1.type = avro 
+a1.sinks.k1.hostname = localhost
+a1.sinks.k1.port = 43212 
+a1.sinks.k2.channel = c1 
+a1.sinks.k2.type = AVRO 
+a1.sinks.k2.hostname = localhost
+a1.sinks.k2.port = 43213
+node1.conf
+#Define a memory channel called c1 on a2 
+a2.channels = c1 
+a2.sources = r1 
+a2.sinks = k1 
+a2.channels.c1.type = memory   
+
+a2.sources.r1.channels = c1 
+a2.sources.r1.type = avro 
+a2.sources.r1.bind = 0.0.0.0 
+a2.sources.r1.port = 43212
+
+a2.sinks.k1.channel = c1 
+a2.sinks.k1.type = logger 
+node2.conf
+#Define a memory channel called c1 on a3 
+a3.channels = c1 
+a3.sources = r1 
+a3.sinks = k1 
+a3.channels.c1.type = memory   
+
+a3.sources.r1.channels = c1 
+a3.sources.r1.type = avro 
+a3.sources.r1.bind = 0.0.0.0 
+a3.sources.r1.port = 43213
+
+a3.sinks.k1.channel = c1 
+a3.sinks.k1.type = logger 
+</code></pre>
+
+<p>5、测试命令：</p>
+
+<pre><code> 打开5个终端，分别顺序执行，node1,node2,server,client ,test
+ 具体命令如下：
+
+bin/flume-ng agent -n a3 -c conf/ -f conf/simple_load/node2.conf  -Dflume.root.logger=INFO,console
+
+2016-07-10 03:29:48,740 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 31 31 31                                        111 }
+2016-07-10 03:29:48,741 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 32 32 32                                        222 }
+
+bin/flume-ng agent -n a2 -c conf/ -f conf/simple_load/node1.conf  -Dflume.root.logger=INFO,console
+
+2016-07-10 03:29:51,042 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 33 33 33                                        333 }
+2016-07-10 03:29:51,043 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 34 34 34                                        444 }
+
+bin/flume-ng agent -n a1 -c conf/ -f conf/simple_load/server.conf -Dflume.root.logger=INFO,console
+bin/flume-ng agent -n a0 -c conf/ -f conf/simple_load/client.conf -Dflume.root.logger=INFO,console
+
+nc localhost 43210
+111
+ok
+222
+ok
+333
+ok
+444
+ok
+</code></pre>
+
+<p>6、测试结论：</p>
+
+<pre><code>测试端发送4条消息，经过server负载处理，node1和node2分别各处理2条消息，达到预期。
+</code></pre>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/flume"><span></span>flume</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2016/08/bloom%20filter/">bloom filter 教程  </a>
+        </div>
+        
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fishman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (9)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2016, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

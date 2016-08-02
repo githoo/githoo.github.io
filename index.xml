@@ -6,8 +6,17 @@
     <description>Recent content on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Aug 2016 09:36:46 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 02 Aug 2016 13:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>flume load balance 搭建及验证</title>
+      <link>http://babifarm.com/post/2016/08/flume-load-balance/</link>
+      <pubDate>Tue, 02 Aug 2016 13:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2016/08/flume-load-balance/</guid>
+      <description>1、验证说明 数据从客户端发送给服务端，服务端进行负载均衡，发给两个处理节点： |----------&amp;gt;node1----&amp;gt;show ---test --&amp;gt; client --&amp;gt;server--&amp;gt;| |----------&amp;gt;node2----&amp;gt;show 2、安装flume: download ：http://flume.apache.org/download.html tar -xvf apache-flume-1.6.0-bin.tar.gz 修改conf/flume-env.sh配置文件,设置JAVA_HOME变量 3、测试环境： 在一台服务器上进行测试 4、相关配置： 在路径conf/simple_load下新建如下文件 client.conf # Define a memory channel called c1 on a0 a0.channels.c1.type = memory a0.channels.c1.capacity = 1000 a0.channels.c1.transactionCapacity = 100 a0.sources.r1.channels = c1 a0.sources.r1.type = netcat a0.sources.r1.bind = localhost a0.sources.r1.port = 43210 #a0.sinks.k1.type = logger a0.sinks.k1.type = avro a0.sinks.k1.channel = c1 a0.sinks.k1.hostname = localhost a0.sinks.k1.port = 43211 a0.channels = c1 a0.sources =</description>
+    </item>
     
     <item>
       <title>bloom filter 教程  </title>
