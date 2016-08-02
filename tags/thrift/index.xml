@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>babifarm.com</title>
-    <link>http://babifarm.com/</link>
-    <description>Recent content on babifarm.com</description>
+    <title>Thrift on babifarm.com</title>
+    <link>http://babifarm.com/tags/thrift/</link>
+    <description>Recent content in Thrift on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Aug 2016 09:36:46 -0700</lastBuildDate>
-    <atom:link href="http://babifarm.com/index.xml" rel="self" type="application/rss+xml" />
-    
-    <item>
-      <title>bloom filter 教程  </title>
-      <link>http://babifarm.com/post/2016/08/bloom%20filter/</link>
-      <pubDate>Tue, 02 Aug 2016 09:36:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/bloom%20filter/</guid>
-      <description>Bloom Filter概念和原理 Bloom Filter是一种空间效率很高的随机数据结构，它利用位数组很简洁地表示一个集合，并能判断一个元素是否属于这个集合。 Bloom Filter的这种高效是有一定代价的： 在判断一个元素是否属于某个集合时，有可能会把不属于这个集合的元素误认为属于这个集合（false positive）。 因此，Bloom Filter不适合那些“零错误”的应用场合。 而在能容忍低错误率的应用场合下，Bloom Filter通过极少的错误换取了存储空间的极大节省。 为了说明Bloom Filter存在的重要意义，举一个实例： 假设要你写一个网络蜘蛛（web crawler）。由于网络间的链接错综复杂，蜘蛛在网络间爬行很可能会形成“环”。为了避免形成“环”，就需要知道蜘蛛已经访问过那些URL。给一个URL，怎样知道蜘蛛是否已经访问过呢？稍微想想，就会有如下几种方案： 1. 将访问过的URL保存到数据库。 2. 用HashSet将访问过的URL保存起来。那只需接近O(1)的代价就可以查到一个URL是否被访问过了。 3. URL经过MD5或SHA-1等单向哈希后再保存到HashSet或数据库。 4. Bit-Map方法。建立一个BitSet，将每个URL经过一个哈希函数映射到某一位。 方法1~3都是将访问过的URL完整保存，方法4则只标记URL的一个映射位。 以上方法在数据量较小的情况下都能完美解决问题，但是当数据量变得非常庞大时问题就来了。 方法1的缺点：数据量变得非常庞大后关系型数据库查询的效率会变得很低。而且每来一个URL就启动一次数据库查询是不是太小题大做了？ 方法2的缺点：太消耗内存。随着URL的增多，占用的内存会越来越多。就算只有1亿个URL，每个URL只算50个字符，就需要5GB内存。 方法3：由于字符串经过MD5处理后的信息摘要长度只有128Bit，SHA-1处理后也只有160Bit，因此方法3比方法2节省了好几倍的内存。 方法4消耗内存是相对较少的，但缺点是单一哈希函数发生冲突的概率太高。若要降低冲突发生的概率到1%，就要将BitSet的长度设置为URL个数的100倍。 实质上上面的算法都忽略了一个重要的隐含条件：允许小概率的出错，不一定要100%准确！也就是说少量url实际上没有没网络蜘蛛访问，而将它们错判为已访问的代价是很小的——大不了少抓几个网页呗。 Bloom Filter的算法 下面引入本篇的主角——Bloom Filter。其实上面方法4的思想已经很接近Bloom Filter了。方法四的致命缺点是冲突概率高，为了降低冲突的概念，Bloom Filter使用了多个哈希函数，而不是一个。 Bloom Filter算法如下： 创建一个m位BitSet，先将所有位初始化为0，然后选择k个不同的哈希函数。第i个哈希函数对字符串str哈希的结果记为h（i，str），且h（i，str）的范围是0到m-1 。 (1) 加入字符串过程 下面是每个字符串处理的过程，首先是将字符串str“记录”到BitSet中的过程： 对于字符串str，分别计算h（1，str），h（2，str）…… h（k，str）。然后将BitSet的第h（1，str）、h（2，str）…… h（k，str）位设为1。 这样就将字符串str映射到BitSet中的k个二进制位了. (2) 检查字符串是否存在的过程 下面是检查字符串str是否被BitSet记录过的过程： 对于字符串str，分别计算h（1，str），h（2，str）…… h（k，str）。然后检查BitSet的第h（1，str）、h（2，str）…… h（k，str）位是否为1，若其中任何一位不为1则可以判定str一定没有被记录过。若全部位都是1，则“认为”字符串str存在。 若一个字符串对应的Bit不全为1，则可以肯定该字符串一定没有被Bloom Filter记录过。（这是显然的，因为字符串被记录过，其对应的二进制位肯定全部被设为1了） 但是若一个字符串对应的Bit全为1，实际上是不能100%的肯定该字符串被Bloom Filter记录过的。（因为有可能该字符串的所有位都刚好是被其他字符串所对应）这种将该字符串划分错的情况，称为false positive 。 (3) 删除字符串过程 字符串加入了就被不能删除了，因为删除会影响到其他字符串。实在需要删除字符串的可以使用Counting bloomfilter(CBF)，这是一种基本Bloom Filter的变体，CBF将基本Bloom Filter每一个Bit改为一个计数器，这样就可以实现删除字符串的功能了。 Bloom Filter跟单哈希函数Bit-Map不同之处在于：Bloom Filter使用了k个哈希函数，每个字符串跟k个bit对应。从而降低了冲突的概率。 Bloom</description>
-    </item>
-    
-    <item>
-      <title>protobuf 教程</title>
-      <link>http://babifarm.com/post/2016/08/protobuf/</link>
-      <pubDate>Tue, 02 Aug 2016 09:16:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/protobuf/</guid>
-      <description>protobuf 版本 2.5.0 ，因为Hadoop hbase 都是这个版本 为了兼容 ，请用是用这个版本 maven插件生成 protobuf 文件 package p13.search; message BookCid3Inst { required string cid3 = 1; //三级分类 required float weight = 2;// 权重 } message UserBookInstCid3s { required string uid = 1; //用户pin repeated BookCid3Inst cid3Inst = 2; //用户图书下感兴趣的三级分类 } pom 插件设置 ，配置说明看注释 &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-antrun-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.7&amp;lt;/version&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;id&amp;gt;compile-protoc&amp;lt;/id&amp;gt; &amp;lt;phase&amp;gt;generate-sources&amp;lt;/phase&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;tasks&amp;gt; &amp;lt;mkdir dir=&amp;quot;target/generated-sources&amp;quot;/&amp;gt; &amp;lt;path id=&amp;quot;proto.path&amp;quot;&amp;gt; &amp;lt;!--proto文件定义的位置--&amp;gt; &amp;lt;fileset dir=&amp;quot;src/main/resources/proto&amp;quot;&amp;gt; &amp;lt;include name=&amp;quot;**/*.proto&amp;quot;/&amp;gt; &amp;lt;/fileset&amp;gt; &amp;lt;/path&amp;gt; &amp;lt;pathconvert</description>
-    </item>
+    <lastBuildDate>Tue, 02 Aug 2016 09:06:46 -0700</lastBuildDate>
+    <atom:link href="http://babifarm.com/tags/thrift/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Protobuf vs Thrift 性能测试</title>
@@ -43,51 +25,6 @@
       
       <guid>http://babifarm.com/post/2016/08/thrift/</guid>
       <description>thrift 安装 thrift 版本：0.9.0 thrift 依赖环境 A relatively POSIX-compliant *NIX system Cygwin or MinGW can be used on Windows g++ 3.3.5+ boost 1.33.1+ (1.34.0 for building all tests) Runtime libraries for lex and yacc might be needed for the compiler. 安装步骤 1、安装依赖 [root@dev-157-132 servers]# yum install automake libtool flex bison pkgconfig gcc-c++ boost-devel libevent-devel zlib-devel python-devel ruby-devel Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile c6-media | 4.0 kB 00:00 Setting up Install Process Package automake-1.11.1-4.el6.noarch already installed and latest version Package 1:pkgconfig-0.23-9.1.el6.x86_64 already installed and latest version Package gcc-c++-4.4.7-3.el6.x86_64 already installed and latest version Package zlib-devel-1.2.3-29.el6.x86_64 already installed and latest version Resolving Dependencies --&amp;gt; Running transaction check ---&amp;gt; Package bison.x86_64 0:2.4.1-5.el6 will be installed ---&amp;gt; Package boost-devel.x86_64 0:1.41.0-11.el6_1.2 will be installed --&amp;gt; Processing Dependency: boost = 1.41.0-11.el6_1.2 for package: boost-devel-1.41.0-11.el6_1.2.x86_64 --&amp;gt; Processing Dependency: libboost_wserialization.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64 --&amp;gt; Processing Dependency: libboost_wserialization-mt.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64 ....................................</description>
-    </item>
-    
-    <item>
-      <title>Scala语言</title>
-      <link>http://babifarm.com/post/2016/08/scala-study/</link>
-      <pubDate>Tue, 02 Aug 2016 08:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/scala-study/</guid>
-      <description>http://www.scala-lang.org 为什么要用Scala The central drive behind Scala is to make life easier and more productive for the developer 教程 http://www.scala-tour.com/#/welcome</description>
-    </item>
-    
-    <item>
-      <title>wiki-gollum 安装说明</title>
-      <link>http://babifarm.com/post/2016/08/wiki-gollum/</link>
-      <pubDate>Tue, 02 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/wiki-gollum/</guid>
-      <description>1.安装RVM https://rvm.io/ ssh admin@192.168.1.1 curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile 2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改) sed -i -e &#39;s/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g&#39; ~/.rvm/config/db 3.安装系统依赖包 CentOS yum install libicu libicu-devel zlib zlib-devel git 4.安装python 2.7+ (一般系统都有自带) 5.安装ruby 1.9.3+ rvm install 1.9.3 rvm list //可以查看目前已经安装的包 rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认 rvm remove 1.9.0 //卸载一个不用的版本 6.安装gollum gem install gollum 7.配置git仓库 ssh admin@192.168.1.2 cd /export/App mkdir wiki.git cd wiki.git git init --bare</description>
-    </item>
-    
-    <item>
-      <title>hugo and github pages部署个人网站教程（二）</title>
-      <link>http://babifarm.com/post/2016/08/hosting-github-pages/</link>
-      <pubDate>Mon, 01 Aug 2016 07:40:35 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
-      <description>github pages部署个人网站 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
-    </item>
-    
-    <item>
-      <title>hugo and github pages部署个人网站教程（一）</title>
-      <link>http://babifarm.com/post/2016/08/hugo-start-guide/</link>
-      <pubDate>Mon, 01 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hugo-start-guide/</guid>
-      <description>hugo 初体验 hugo安装： 下载： https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz 安装： tar xzvf hugo_0.16_linux-64bit.tgz -C hugo_0.16_linux hugo使用： 建网站： $ hugo new site mysite $ cd mysite 在该目录下你可以看到以下几个目录和 config.toml 文件 ▸ archetypes/ ▸ content/ ▸ layouts/ ▸ static/ config.toml config.toml 是网站的配置文件，包括 baseurl , title , copyright 等等网站参数。 这几个文件夹的作用分别是： archetypes：包括内容类型，在创建新内容时自动生成内容的配置 content：包括网站内容，全部使用markdown格式 layouts：包括了网站的模版，决定内容如何呈现 static：包括了css, js, fonts, media等，决定网站的外观 创建新页面： $ hugo new about.md 相关操作都在mysite目录下，否则会报错； 进入 content/ 文件夹可以看到，此时多了一个markdown格式的文件 about.md ，打开文件可以看到时间和文件名等信息已经自动加到文件开头，包括创建时间，页面名，是否为草稿等。 下载主题： $ git clone https://github.com/spf13/hyde.git 运行Hugo: $ hugo server -t</description>
-    </item>
-    
-    <item>
-      <title>about post</title>
-      <link>http://babifarm.com/post/about-post/</link>
-      <pubDate>Mon, 01 Aug 2016 04:24:16 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/about-post/</guid>
-      <description>post about test abc efg hij 创建新页面</description>
     </item>
     
   </channel>

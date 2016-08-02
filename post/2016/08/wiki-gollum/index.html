@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>about post | babifarm.com</title>
+    <title>wiki-gollum 安装说明 | babifarm.com</title>
   </head>
   <body>
     <div id="wrap">
@@ -34,15 +34,19 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>about post</h1>
+      <h1>wiki-gollum 安装说明</h1>
       <div class="article-meta">
-        <span class="posttime">2016/08/01</span>
+        <span class="posttime">2016/08/02</span>
         
 <div class="tags">
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/wiki"><span></span>wiki</a>
+    </li>
+    
+    <li>
+      <a href="/tags/tool"><span></span>tool</a>
     </li>
     
   </ul>
@@ -65,18 +69,81 @@
 
   </header>
   <div class="content">
-    
+    <p>1.安装RVM <a href="https://rvm.io/">https://rvm.io/</a></p>
 
-<h3 id="post-about">post about</h3>
+<pre><code>ssh admin@192.168.1.1
+curl -L get.rvm.io | bash -s stable 
+source ~/.bashrc
+source ~/.bash_profile
+</code></pre>
 
-<p>test</p>
+<p>2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改)</p>
 
-<ul>
-<li>abc</li>
-<li>efg</li>
-<li>hij</li>
-<li>创建新页面</li>
-</ul>
+<pre><code>sed -i -e 's/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g' ~/.rvm/config/db
+</code></pre>
+
+<p>3.安装系统依赖包</p>
+
+<pre><code>CentOS
+yum install libicu libicu-devel zlib zlib-devel git
+</code></pre>
+
+<p>4.安装python 2.7+ (一般系统都有自带)</p>
+
+<p>5.安装ruby 1.9.3+</p>
+
+<pre><code>rvm install 1.9.3
+rvm list //可以查看目前已经安装的包
+rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认
+rvm remove 1.9.0 //卸载一个不用的版本
+</code></pre>
+
+<p>6.安装gollum</p>
+
+<pre><code>gem install gollum
+</code></pre>
+
+<p>7.配置git仓库</p>
+
+<pre><code>ssh admin@192.168.1.2
+cd /export/App
+mkdir wiki.git
+cd wiki.git
+git init --bare
+</code></pre>
+
+<p>7.启动并配置wiki</p>
+
+<pre><code>ssh admin@192.168.1.1
+cd /export/APp
+git clone admin@172.16.162.55:/export/App/wiki.git
+cd wiki
+gollum --base-path wiki --port 4567 --mathjax
+</code></pre>
+
+<p>8.配置域名访问</p>
+
+<pre><code>ssh admin@192.168.1.3
+nginx.conf:
+server{
+   location /wiki{
+       proxy_pass  http://192.168.1.1:4567;
+   }
+}
+sbin/nginx -s reload
+</code></pre>
+
+<p>9.访问wiki</p>
+
+<pre><code>http://si.jd.com/wiki
+</code></pre>
+
+<p>10.备份wiki</p>
+
+<pre><code>ssh admin@192.168.1.1
+crontab -e:
+*/20 * * * * sh /export/App/wiki_bak_shell/bak.sh &gt;&gt; /export/App/wiki_bak_shell/log.txt 2&gt;&amp;1 &amp;
+</code></pre>
 
   </div>
   <footer>
@@ -86,7 +153,11 @@
   <ul>
     
     <li>
-      <a href="/tags/about"><span></span>about</a>
+      <a href="/tags/wiki"><span></span>wiki</a>
+    </li>
+    
+    <li>
+      <a href="/tags/tool"><span></span>tool</a>
     </li>
     
   </ul>
@@ -110,10 +181,15 @@
       
       <div id="pagenavigation-next-prev">
         
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2016/08/hosting-github-pages/">hugo and github pages部署个人网站教程（二）</a>
+        </div>
+        
         
         <div id="pagenavigation-prev">
           <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/hugo-start-guide/">hugo and github pages部署个人网站教程（一）</a>
+          <a href="http://babifarm.com/post/2016/08/scala-study/">Scala语言</a>
         </div>
         
       </div>

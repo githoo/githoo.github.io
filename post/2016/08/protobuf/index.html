@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>protobuf 教程 | babifarm.com</title>
+  </head>
+  <body>
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>protobuf 教程</h1>
+      <div class="article-meta">
+        <span class="posttime">2016/08/02</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/protobuf"><span></span>protobuf</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<p>protobuf  版本 2.5.0 ，因为Hadoop hbase 都是这个版本 为了兼容 ，请用是用这个版本</p>
+
+<h2 id="maven插件生成">maven插件生成</h2>
+
+<h3 id="protobuf-文件">protobuf 文件</h3>
+
+<pre><code class="language-xml">package p13.search; 
+
+
+message BookCid3Inst
+{
+    required string cid3 = 1; //三级分类
+    required float  weight = 2;// 权重
+}
+
+message UserBookInstCid3s
+{
+    required string uid = 1; //用户pin
+    repeated BookCid3Inst cid3Inst = 2; //用户图书下感兴趣的三级分类
+}
+</code></pre>
+
+<h3 id="pom-插件设置-配置说明看注释">pom 插件设置 ，配置说明看注释</h3>
+
+<pre><code class="language-xml"> &lt;plugin&gt;
+            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+            &lt;artifactId&gt;maven-antrun-plugin&lt;/artifactId&gt;
+            &lt;version&gt;1.7&lt;/version&gt;
+            &lt;executions&gt;
+                &lt;execution&gt;
+                    &lt;id&gt;compile-protoc&lt;/id&gt;
+                    &lt;phase&gt;generate-sources&lt;/phase&gt;
+
+                    &lt;configuration&gt;
+                        &lt;tasks&gt;
+                            &lt;mkdir dir=&quot;target/generated-sources&quot;/&gt;
+                            &lt;path id=&quot;proto.path&quot;&gt;
+                                &lt;!--proto文件定义的位置--&gt;
+                                &lt;fileset dir=&quot;src/main/resources/proto&quot;&gt;
+                                    &lt;include name=&quot;**/*.proto&quot;/&gt;
+                                &lt;/fileset&gt;
+                            &lt;/path&gt;
+                            &lt;pathconvert pathsep=&quot; &quot; property=&quot;proto.files&quot;
+                                         refid=&quot;proto.path&quot;/&gt;
+                                &lt;!--proto 执行文件 所在位置--&gt;
+                            &lt;exec executable=&quot;E:\softs\protoc-2.5.0-win32\protoc.exe&quot;&gt;
+                                &lt;arg value=&quot;--java_out=target/generated-sources&quot;/&gt;
+                               &lt;!-- 生成Java类文件 所在位置--&gt;
+                                &lt;arg value=&quot;-I${project.basedir}/src/main/resources/proto&quot;/&gt;
+                                &lt;arg line=&quot;${proto.files}&quot;/&gt;
+                            &lt;/exec&gt;
+                        &lt;/tasks&gt;
+                        &lt;sourceRoot&gt;target/generated-sources&lt;/sourceRoot&gt;
+                    &lt;/configuration&gt;
+                    &lt;goals&gt;
+                        &lt;goal&gt;run&lt;/goal&gt;
+                    &lt;/goals&gt;
+                &lt;/execution&gt;
+            &lt;/executions&gt;
+        &lt;/plugin&gt;
+</code></pre>
+
+<p>点击IDEA的compile 就可以生成相应的Java 类了。<br />
+点击IDEA的deploy 部署到私服，供其他人使用。</p>
+
+<h2 id="利用proto-自带执行文件生成">利用proto 自带执行文件生成</h2>
+
+<h3 id="protobuf-文件-1">protobuf 文件</h3>
+
+<pre><code class="language-xml">package p13.search; 
+
+
+message BookCid3Inst
+{
+    required string cid3 = 1; //三级分类
+    required float  weight = 2;// 权重
+}
+
+message UserBookInstCid3s
+{
+    required string uid = 1; //用户pin
+    repeated BookCid3Inst cid3Inst = 2; //用户图书下感兴趣的三级分类
+}
+</code></pre>
+
+<h3 id="protoc-exe-执行步骤">protoc.exe 执行步骤</h3>
+
+<pre><code class="language-xml">
+  1、 生成C代码  
+ protoc.exe -proto_path=proto文件所在的目录 --cpp_out=生成C代码所在的位置
+  2、 生成Java代码
+ protoc.exe -proto_path=proto文件所在的目录 --java_out=生成java代码所在的位置
+ 
+</code></pre>
+
+<p>具体Linux下安装请参考：</p>
+
+<p><a href="http://blog.csdn.net/realxie/article/details/7456013">http://blog.csdn.net/realxie/article/details/7456013</a></p>
+
+<p>Protobuf语言指南</p>
+
+<p><a href="http://www.cnblogs.com/dkblog/archive/2012/03/27/2419010.html">http://www.cnblogs.com/dkblog/archive/2012/03/27/2419010.html</a></p>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/protobuf"><span></span>protobuf</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2016/08/protobuf-vs-thrift/">Protobuf vs Thrift 性能测试</a>
+        </div>
+        
+        
+        <div id="pagenavigation-prev">
+          <span class="pagenav-label">Next</span>
+          <a href="http://babifarm.com/post/2016/08/bloom%20filter/">bloom filter 教程  </a>
+        </div>
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fishman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (8)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2016, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

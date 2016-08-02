@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>thrift 教程 | babifarm.com</title>
+  </head>
+  <body>
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>thrift 教程</h1>
+      <div class="article-meta">
+        <span class="posttime">2016/08/02</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/thrift"><span></span>thrift</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<h2 id="thrift-安装">thrift 安装</h2>
+
+<p>thrift 版本：0.9.0</p>
+
+<h3 id="thrift-依赖环境">thrift 依赖环境</h3>
+
+<pre><code class="language-xml"> A relatively POSIX-compliant *NIX system 
+ Cygwin or MinGW can be used on Windows 
+ g++ 3.3.5+ 
+ boost 1.33.1+ (1.34.0 for building all tests) 
+ Runtime libraries for lex and yacc might be needed for the compiler.  
+</code></pre>
+
+<h3 id="安装步骤">安装步骤</h3>
+
+<h4 id="1-安装依赖">1、安装依赖</h4>
+
+<pre><code class="language-xml">[root@dev-157-132 servers]#  yum install automake libtool flex bison pkgconfig gcc-c++ boost-devel libevent-devel zlib-devel python-devel ruby-devel 
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+c6-media | 4.0 kB 00:00
+Setting up Install Process
+Package automake-1.11.1-4.el6.noarch already installed and latest version
+Package 1:pkgconfig-0.23-9.1.el6.x86_64 already installed and latest version
+Package gcc-c++-4.4.7-3.el6.x86_64 already installed and latest version
+Package zlib-devel-1.2.3-29.el6.x86_64 already installed and latest version
+Resolving Dependencies
+--&gt; Running transaction check
+---&gt; Package bison.x86_64 0:2.4.1-5.el6 will be installed
+---&gt; Package boost-devel.x86_64 0:1.41.0-11.el6_1.2 will be installed
+--&gt; Processing Dependency: boost = 1.41.0-11.el6_1.2 for package: boost-devel-1.41.0-11.el6_1.2.x86_64
+--&gt; Processing Dependency: libboost_wserialization.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64
+--&gt; Processing Dependency: libboost_wserialization-mt.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64
+....................................
+</code></pre>
+
+<h4 id="2-安装thrift">2、安装thrift</h4>
+
+<pre><code class="language-xml">  [root@dev-157-132 servers]# tar -zxvf thrift-0.9.0.tar.gz   
+  [root@dev-157-132 servers]# cd thrift-0.9.0   
+  $ ./configure
+  thrift 0.9.0
+
+  Building C++ Library ......... : no
+  Building C (GLib) Library .... : no
+  Building Java Library ........ : no
+  Building C# Library .......... : no 
+  ......
+
+  Python Library:
+  Using Python .............. : /usr/bin/python
+</code></pre>
+
+<p>继续执行以下步骤：</p>
+
+<pre><code class="language-xml">   $ make (这步比较，耐心...)  
+   $ make install    
+</code></pre>
+
+<p>检查是否安装成功：</p>
+
+<pre><code class="language-xml">  $ thrift -version    
+  Thrift version 0.9.0 （显示这个说明安装成功）  
+</code></pre>
+
+<h3 id="生成java-类文件">生成Java 类文件</h3>
+
+<h4 id="1-定义thrift-文件">1、定义thrift 文件</h4>
+
+<pre><code class="language-xml">[root@dev-157-132 tt]# vim Hello.thrift   
+mespace java service.demo
+ service Hello{
+  string helloString(1:string para)
+  i32 helloInt(1:i32 para)
+  bool helloBoolean(1:bool para)
+  void helloVoid()
+  string helloNull()
+ }
+</code></pre>
+
+<h4 id="2-生成java-类文件">2、生成Java 类文件</h4>
+
+<pre><code class="language-xml"> [root@dev-157-132 tt]# thrift -r -gen java ./Hello.thrift  // -r对其中include的文件也生成服务代码 -gen是生成服务代码的语言  
+
+生成的Java 类文件：
+ [root@dev-157-132 tt]# gen-java/service/demo/Hello.java
+</code></pre>
+
+<h3 id="maven-插件配置">maven 插件配置</h3>
+
+<p>maven 项目的结构：</p>
+
+<pre><code class="language-xml"> src
+  |--main
+  |--java
+  |--resource
+  |--thrift
+       |--client.thrift(thrift文件)  
+</code></pre>
+
+<p>插件配置</p>
+
+<pre><code class="language-xml"> &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.thrift.tools&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-thrift-plugin&lt;/artifactId&gt;
+                &lt;version&gt;0.1.12-SNAPSHOT&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;thriftExecutable&gt;/usr/local/bin/thrift&lt;/thriftExecutable&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;thrift-sources&lt;/id&gt;
+                        &lt;phase&gt;generate-sources&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;compile&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+</code></pre>
+
+<h3 id="官方文档">官方文档</h3>
+
+<p><a href="http://thrift.apache.org/tutorial/">http://thrift.apache.org/tutorial/</a><br />
+<a href="http://thrift.apache.org/tutorial/java">http://thrift.apache.org/tutorial/java</a></p>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/thrift"><span></span>thrift</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2016/08/scala-study/">Scala语言</a>
+        </div>
+        
+        
+        <div id="pagenavigation-prev">
+          <span class="pagenav-label">Next</span>
+          <a href="http://babifarm.com/post/2016/08/protobuf-vs-thrift/">Protobuf vs Thrift 性能测试</a>
+        </div>
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fishman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (8)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2016, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
