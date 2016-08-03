@@ -136,7 +136,7 @@ Resolving Dependencies
 
 <h4 id="1-定义thrift-文件">1、定义thrift 文件</h4>
 
-<pre><code class="language-xml">[root@dev-157-132 tt]# vim Hello.thrift   
+<pre><code class="language-xml">$ vim Hello.thrift   
 mespace java service.demo
  service Hello{
   string helloString(1:string para)
@@ -149,10 +149,10 @@ mespace java service.demo
 
 <h4 id="2-生成java-类文件">2、生成Java 类文件</h4>
 
-<pre><code class="language-xml"> [root@dev-157-132 tt]# thrift -r -gen java ./Hello.thrift  // -r对其中include的文件也生成服务代码 -gen是生成服务代码的语言  
+<pre><code class="language-xml"> $ thrift -r -gen java ./Hello.thrift  // -r对其中include的文件也生成服务代码 -gen是生成服务代码的语言  
 
 生成的Java 类文件：
- [root@dev-157-132 tt]# gen-java/service/demo/Hello.java
+ $ gen-java/service/demo/Hello.java
 </code></pre>
 
 <h3 id="maven-插件配置">maven 插件配置</h3>
