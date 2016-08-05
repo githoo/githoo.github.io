@@ -10,16 +10,16 @@
     <atom:link href="http://babifarm.com/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>hugo and github pages部署个人网站教程（二）</title>
+      <title>使用hugo搭建博客教程（二）</title>
       <link>http://babifarm.com/post/2016/08/hosting-github-pages/</link>
       <pubDate>Mon, 01 Aug 2016 07:40:35 -0700</pubDate>
       
       <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
-      <description>github pages部署个人网站 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
+      <description>github pages部署个人博客 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
     </item>
     
     <item>
-      <title>hugo and github pages部署个人网站教程（一）</title>
+      <title>使用hugo搭建博客教程（一）</title>
       <link>http://babifarm.com/post/2016/08/hugo-start-guide/</link>
       <pubDate>Mon, 01 Aug 2016 06:06:46 -0700</pubDate>
       
