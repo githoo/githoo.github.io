@@ -15,7 +15,7 @@
       <pubDate>Mon, 01 Aug 2016 04:24:16 -0700</pubDate>
       
       <guid>http://babifarm.com/post/about-post/</guid>
-      <description>第一个测试页面 hugo site下面上次图片： static/images/about/about.png markdown中设置图片路径： markdown图片：![about](/images/about/about.png &amp;quot;test image&amp;quot;)</description>
+      <description>第一个测试页面 hugo site 上传图片： static/images/about/about.png markdown中设置图片路径： markdown图片：![about](/images/about/about.png &amp;quot;test image&amp;quot;)</description>
     </item>
     
   </channel>

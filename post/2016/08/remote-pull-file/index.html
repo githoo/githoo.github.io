@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>使用hugo搭建博客教程（一） | babifarm.com</title>
+    <title>利用Python远程拉取文件 | babifarm.com</title>
   </head>
   <body>
     <div id="wrap">
@@ -34,15 +34,15 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>使用hugo搭建博客教程（一）</h1>
+      <h1>利用Python远程拉取文件</h1>
       <div class="article-meta">
-        <span class="posttime">2016/08/01</span>
+        <span class="posttime">2016/08/13</span>
         
 <div class="tags">
   <ul>
     
     <li>
-      <a href="/tags/hugo"><span></span>hugo</a>
+      <a href="/tags/python"><span></span>python</a>
     </li>
     
   </ul>
@@ -65,67 +65,33 @@
 
   </header>
   <div class="content">
-    
+    <p>利用Python自带的包可以建立简单的web服务器。</p>
 
-<h2 id="hugo-初体验">hugo 初体验</h2>
+<p>cd到准备做服务器根目录的路径下，输入命令：python -m Web服务器模块 [端口号，默认8000]</p>
 
-<h3 id="hugo安装">hugo安装：</h3>
+<pre><code>$ python -m SimpleHTTPServer 8080
+</code></pre>
 
-<ol>
-<li><p>下载：
-<a href="https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz">https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz</a></p></li>
+<p>然后就可以在浏览器中输入:</p>
 
-<li><p>安装：
-tar xzvf hugo_0.16_linux-64bit.tgz  -C hugo_0.16_linux</p></li>
-</ol>
+<pre><code>http://localhost:端口号/路径 来访问服务器资源。 
+</code></pre>
 
-<h3 id="hugo使用">hugo使用：</h3>
+<p>例如：</p>
 
-<ol>
-<li><p>建网站：</p>
+<pre><code>http://localhost:8080/index.htm（当然index.htm文件得自己创建） 
+</code></pre>
 
-<p>$ hugo new site mysite
-$ cd mysite
-在该目录下你可以看到以下几个目录和 config.toml 文件</p>
+<p>实例：</p>
 
-<ul>
-<li>▸ archetypes/</li>
-<li>▸ content/</li>
-<li>▸ layouts/</li>
-<li>▸ static/</li>
-<li>config.toml</li>
-</ul>
+<pre><code>源头：192.168.1.1
+$ cd /home/admin/
+$ tar czvf test_deploy.tar.gz test_deploy
+$ python -m SimpleHTTPServer 8088
 
-<p>config.toml 是网站的配置文件，包括 baseurl , title , copyright 等等网站参数。
-这几个文件夹的作用分别是：</p>
-
-<ul>
-<li>archetypes：包括内容类型，在创建新内容时自动生成内容的配置</li>
-<li>content：包括网站内容，全部使用markdown格式</li>
-<li>layouts：包括了网站的模版，决定内容如何呈现</li>
-<li>static：包括了css, js, fonts, media等，决定网站的外观</li>
-</ul></li>
-
-<li><p>创建新页面：</p>
-
-<p>$ hugo new about.md
-相关操作都在mysite目录下，否则会报错；
-进入 content/ 文件夹可以看到，此时多了一个markdown格式的文件 about.md ，打开文件可以看到时间和文件名等信息已经自动加到文件开头，包括创建时间，页面名，是否为草稿等。</p></li>
-
-<li><p>下载主题：</p>
-
-<p>$  git clone <a href="https://github.com/spf13/hyde.git">https://github.com/spf13/hyde.git</a></p></li>
-
-<li><p>运行Hugo:</p>
-
-<p>$ hugo server -t hyde &ndash;buildDrafts  &ndash;verbose</p>
-
-<p>-t 参数的意思是使用hyde主题渲染我们的页面，注意到 about.md 目前是作为草稿，即 draft 参数设置为 true ，运行Hugo时要加上 &ndash;buildDrafts 参数才会生成被标记为草稿的页面。The “&ndash;verbose” flag gives extra information that will be helpful when we build the template</p></li>
-
-<li><p>在浏览器查看：</p>
-
-<p><a href="http://localhost:1313，就可以看到我们刚刚创建的页面。">http://localhost:1313，就可以看到我们刚刚创建的页面。</a></p></li>
-</ol>
+目的：192.168.1.2
+$ cd /home/admin/;\rm -rvf test_deploy.tar.gz;wget http://192.168.1.1:8088/test_deploy.tar.gz;ll test_deploy.tar.gz|wc -l;tar -xzvf test_deploy.tar.gz;cd test_deploy;sh exe.sh;tail -f /export/servers/openresty/nginx/logs/error.log
+</code></pre>
 
   </div>
   <footer>
@@ -135,7 +101,7 @@ $ cd mysite
   <ul>
     
     <li>
-      <a href="/tags/hugo"><span></span>hugo</a>
+      <a href="/tags/python"><span></span>python</a>
     </li>
     
   </ul>
@@ -161,14 +127,9 @@ $ cd mysite
         
         <div id="pagenavigation-next">
           <span class="pagenav-label">Previous</span>
-          <a href="http://babifarm.com/post/about-post/">关于</a>
+          <a href="http://babifarm.com/post/2016/08/flume-send-kafka/"> flume 整合 kafka </a>
         </div>
         
-        
-        <div id="pagenavigation-prev">
-          <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/hosting-github-pages/">使用hugo搭建博客教程（二）</a>
-        </div>
         
       </div>
       

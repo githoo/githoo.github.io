@@ -6,8 +6,17 @@
     <description>Recent content in 技术 on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Aug 2016 13:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 13 Aug 2016 13:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>利用Python远程拉取文件</title>
+      <link>http://babifarm.com/post/2016/08/remote-pull-file/</link>
+      <pubDate>Sat, 13 Aug 2016 13:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2016/08/remote-pull-file/</guid>
+      <description>利用Python自带的包可以建立简单的web服务器。 cd到准备做服务器根目录的路径下，输入命令：python -m Web服务器模块 [端口号，默认8000] $ python -m SimpleHTTPServer 8080 然后就可以在浏览器中输入: http://localhost:端口号/路径 来访问服务器资源。 例如： http://localhost:8080/index.htm（当然index.htm文件得自己创建） 实例： 源头：192.168.1.1 $ cd /home/admin/ $ tar czvf test_deploy.tar.gz test_deploy $ python -m SimpleHTTPServer 8088 目的：192.168.1.2 $ cd /home/admin/;\rm -rvf test_deploy.tar.gz;wget http://192.168.1.1:8088/test_deploy.tar.gz;ll test_deploy.tar.gz|wc -l;tar -xzvf test_deploy.tar.gz;cd test_deploy;sh exe.sh;tail -f /export/servers/openresty/nginx/logs/error.log</description>
+    </item>
     
     <item>
       <title> flume 整合 kafka </title>
