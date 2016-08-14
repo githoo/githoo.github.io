@@ -65,9 +65,13 @@
 
   </header>
   <div class="content">
-    <p>github pages部署个人博客</p>
+    
+
+<p>github pages部署个人博客</p>
 
 <p>Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。</p>
+
+<h3 id="创建和部署">创建和部署</h3>
 
 <p>创建两个单独的git仓库repo：</p>
 
@@ -175,6 +179,10 @@ Custom domain : your-website.com
 或者在&lt;username&gt;.github.io repo的跟目录下添加CNAME文件，文件里写上你的域名，不用加http://的开头。
 </code></pre>
 
+<h3 id="高级功能">高级功能</h3>
+
+<h4 id="上传图片">上传图片</h4>
+
 <p>上传图片方法：</p>
 
 <pre><code>hugo site中上传图片路径：
@@ -187,7 +195,7 @@ static/images/about/about.png
 <pre><code>	markdown图片：![about](/images/about/about.png &quot;test image&quot;)
 </code></pre>
 
-<p>添加评论的方法：</p>
+<h4 id="添加评论的方法">添加评论的方法：</h4>
 
 <pre><code>由于disqus访问不了，可以使用国内的类似的duoshuo
 </code></pre>
@@ -229,6 +237,43 @@ static/images/about/about.png
 
 <pre><code>layouts/_default/single.html
 {{ partial &quot;duoshuo.html&quot; . }}
+</code></pre>
+
+<h4 id="统计访问量">统计访问量</h4>
+
+<p>注册statcounter账号：</p>
+
+<pre><code>http://zh_cn.statcounter.com
+</code></pre>
+
+<p>增加statCounter模板文件：</p>
+
+<pre><code>layouts/partials/statCounter.html
+&lt;!-- Start of StatCounter Code for Default Guide --&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+var sc_project=11072857;
+var sc_invisible=0;
+var sc_security=&quot;98129f58&quot;;
+var scJsHost = ((&quot;https:&quot; == document.location.protocol) ?
+&quot;https://secure.&quot; : &quot;http://www.&quot;);
+document.write(&quot;&lt;sc&quot;+&quot;ript type='text/javascript' src='&quot; +
+scJsHost+
+&quot;statcounter.com/counter/counter.js'&gt;&lt;/&quot;+&quot;script&gt;&quot;);
+&lt;/script&gt;
+&lt;noscript&gt;&lt;div class=&quot;statcounter&quot;&gt;&lt;a title=&quot;website
+statistics&quot; href=&quot;http://statcounter.com/&quot;
+target=&quot;_blank&quot;&gt;&lt;img class=&quot;statcounter&quot;
+src=&quot;//c.statcounter.com/11072857/0/98129f58/0/&quot;
+alt=&quot;website statistics&quot;&gt;&lt;/a&gt;&lt;/div&gt;&lt;/noscript&gt;
+&lt;!-- End of StatCounter Code for Default Guide --&gt;
+</code></pre>
+
+<p>修改显示模板：</p>
+
+<pre><code>layouts/partials/ footer.html
+&lt;span&gt; 
+              visits {{ partial &quot;statCounter.html&quot; . }}
+&lt;/span&gt;
 </code></pre>
 
   </div>
@@ -360,7 +405,7 @@ static/images/about/about.png
               
             </span>
             <span>  
-              
+              visits 
 <script type="text/javascript">
 var sc_project=11072857; 
 var sc_invisible=0; 
