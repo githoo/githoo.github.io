@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>Scala语言 | babifarm.com</title>
+    <title> 定时器设计思想  | babifarm.com</title>
   </head>
   <body>    
     <div id="wrap">
@@ -34,15 +34,15 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>Scala语言</h1>
+      <h1> 定时器设计思想 </h1>
       <div class="article-meta">
-        <span class="posttime">2016/08/02</span>
+        <span class="posttime">2016/08/28</span>
         
 <div class="tags">
   <ul>
     
     <li>
-      <a href="/tags/scala"><span></span>scala</a>
+      <a href="/tags/%E6%80%9D%E8%80%83"><span></span>思考</a>
     </li>
     
   </ul>
@@ -67,18 +67,31 @@
   <div class="content">
     
 
-<p><a href="http://www.scala-lang.org">http://www.scala-lang.org</a></p>
+<h2 id="设计思想">设计思想</h2>
 
-<h2 id="为什么要用scala">为什么要用Scala</h2>
-
-<blockquote>
-<p>The central drive behind Scala is to make life easier and more productive for the developer</p>
-</blockquote>
-
-<h2 id="教程">教程</h2>
+<p>关键环节：
+- 周期 cycle
+- 刻度 index
+- 任务 task</p>
 
 <ul>
-<li><a href="http://www.scala-tour.com/#/welcome">http://www.scala-tour.com/#/welcome</a></li>
+<li><p>1、计时器</p>
+
+<p>系统时间（纳秒级）自增，维持一个执行周期C和当前index值I  （C ，I）</p></li>
+
+<li><p>2、任务表  <I,<C,T>&gt;</p>
+
+<p>按任务初始化一个任务周期表（环形）
+ 表中每个刻度I存放任务映射关系：周期C和定时任务T）</p></li>
+
+<li><p>3、刻度</p>
+
+<p>任务执行的时间精度</p></li>
+
+<li><p>4、定时机器类型模型 不同的精度有不停的模型</p>
+
+<p>如小时精度，一天24个小时，类似手表，可以映射到12个小时，1~12小时，12个刻度
+任务T1要每隔7天的3点执行，(7*24+3)/12  14个周期+3小时 ，这个任务在任务表的设置（C=14 ，I=3 ，T=T1）</p></li>
 </ul>
 
   </div>
@@ -89,7 +102,7 @@
   <ul>
     
     <li>
-      <a href="/tags/scala"><span></span>scala</a>
+      <a href="/tags/%E6%80%9D%E8%80%83"><span></span>思考</a>
     </li>
     
   </ul>
@@ -110,7 +123,7 @@
 
 
       
-<div class="ds-thread" data-thread-key="" data-title="Scala语言" data-url="http://babifarm.com/post/2016/08/scala-study/"></div>
+<div class="ds-thread" data-thread-key="" data-title=" 定时器设计思想 " data-url="http://babifarm.com/post/2016/08/timer/"></div>
 
 
 
@@ -133,13 +146,13 @@
         
         <div id="pagenavigation-next">
           <span class="pagenav-label">Previous</span>
-          <a href="http://babifarm.com/post/2016/08/wiki-gollum/">wiki-gollum 安装说明</a>
+          <a href="http://babifarm.com/post/2016/08/remote-pull-file/">利用Python远程拉取文件</a>
         </div>
         
         
         <div id="pagenavigation-prev">
           <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/thrift/">thrift 教程</a>
+          <a href="http://babifarm.com/post/2016/08/java-mem-design/"> Java内存模型设计思想 </a>
         </div>
         
       </div>
