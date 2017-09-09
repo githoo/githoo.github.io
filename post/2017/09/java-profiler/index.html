@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>java profiler tool | babifarm.com</title>
+  </head>
+  <body>    
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>java profiler tool</h1>
+      <div class="article-meta">
+        <span class="posttime">2017/09/09</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/java"><span></span>java</a>
+    </li>
+    
+    <li>
+      <a href="/tags/profiler"><span></span>profiler</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<p>##YourKit Java Profiler</p>
+
+<p>Yourkit是一款集Java profile数据收集及分析的工具，常用于分析Java程序性能瓶颈，带有cpu prifling、memory profiling等等各种profiling。以下会从yourkit使用场景、监控快照数据收集及分析、远程Java进程实时监控三方面来介绍。</p>
+
+<p>###收集Java profile快照数据</p>
+
+<p>1、yourkit下载：
+window查看：<a href="https://www.yourkit.com/download/YourKit-JavaProfiler-2017.02-b66.exe">https://www.yourkit.com/download/YourKit-JavaProfiler-2017.02-b66.exe</a>
+Linux服务端插件：<a href="https://www.yourkit.com/download/YourKit-JavaProfiler-2017.02-b66.zip">https://www.yourkit.com/download/YourKit-JavaProfiler-2017.02-b66.zip</a></p>
+
+<p>2、应用程序执行脚本增加：</p>
+
+<pre><code>-agentpath:/export/servers/java_profile/yjp-2017.02/bin/linux-x86-64/libyjpagent.so：
+</code></pre>
+
+<p>eg:</p>
+
+<pre><code>java -agentpath:/export/servers/java_profile/yjp-2017.02/bin/linux-x86-64/libyjpagent.so -jar /export/servers/proxy/proxy-1.0-SNAPSHOT.jar
+</code></pre>
+
+<p>3、收集数据：</p>
+
+<pre><code> java -jar /export/servers/java_profile/yjp-2017.02/lib/yjp-controller-api-redist.jar localhost 10001 start-cpu-sampling
+ java -jar /export/servers/java_profile/yjp-2017.02/lib/yjp-controller-api-redist.jar localhost 10001 stop-cpu-profiling
+ java -jar /export/servers/java_profile/yjp-2017.02/lib/yjp-controller-api-redist.jar localhost 10001 capture-performance-snapshot
+</code></pre>
+
+<p>4、查看分析
+打开yourkit，File&ndash;&gt;open snapshot，选中上一步down下的snapshot文件，如图可看出代码中哪些方法比较占CPU。还可看thread繁忙状态、内存使用、性能曲线中net io等。</p>
+
+<p>###远程调试
+远程连接Java进程，实时查看其cpu、内存等监控（类似于visualVm，但比visualVm要详细）。Yourkit能做的事情并不止这些，其他类型的监控可参考官网介绍：<a href="https://www.yourkit.com/docs/java/help/。">https://www.yourkit.com/docs/java/help/。</a></p>
+
+<p>yourkit软件 welcome page点击connect to remote application，按照以下格式输入：
+跳板机:跳板机port Java应用服务器:监控收集端口，点击connect
+远程调试
+10.188.188.120:80 10.10.130.116:10001</p>
+
+<p>应用服务器端执行：
+/export/servers/java_profile/yjp-2017.02/bin/yjp.sh -attach</p>
+
+<p>参考：<a href="https://www.yourkit.com/docs/java/help/attach_wizard.jsp">https://www.yourkit.com/docs/java/help/attach_wizard.jsp</a></p>
+
+<h3 id="yourkit-command">yourKit command</h3>
+
+<p>YourKit Java Profiler2016.02-b36 command line tools</p>
+
+<pre><code>Usage: java -jar yjp-controller-api-redist.jar &lt;host&gt; &lt;port&gt; &lt;command&gt;
+where &lt;command&gt; is one of:
+status
+capture-memory-snapshot
+capture-hprof-snapshot
+capture-performance-snapshot
+start-cpu-sampling
+start-cpu-tracing
+start-cpu-call-counting
+stop-cpu-profiling
+clear-cpu-data
+start-alloc-recording-all
+  // record all objects
+start-alloc-recording-adaptive [alloc-sampled]
+  // record all objects with size &gt;= 4 KB, and only each 10th smaller object
+stop-alloc-recording
+clear-alloc-data
+start-monitor-profiling
+stop-monitor-profiling
+clear-monitor-data
+enable-stack-telemetry
+disable-stack-telemetry
+force-gc
+
+Examples:
+java -jar yjp-controller-api-redist.jar localhost 10001 capture-memory-snapshot
+java -jar yjp-controller-api-redist.jar localhost 10001 start-cpu-sampling
+</code></pre>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/java"><span></span>java</a>
+    </li>
+    
+    <li>
+      <a href="/tags/profiler"><span></span>profiler</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+<div class="ds-thread" data-thread-key="" data-title="java profiler tool" data-url="http://babifarm.com/post/2017/09/java-profiler/"></div>
+
+
+
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"babi"};
+
+    (function() {
+     var ds = document.createElement('script');
+     ds.type = 'text/javascript';ds.async = true;
+     ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+     ds.charset = 'UTF-8';
+     (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+    </script>
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2016/08/java-mem-design/"> Java内存模型设计思想 </a>
+        </div>
+        
+        
+        <div id="pagenavigation-prev">
+          <span class="pagenav-label">Next</span>
+          <a href="http://babifarm.com/post/2017/09/gatling-start/">gatling start</a>
+        </div>
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fishman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E5%B7%A5%E5%85%B7"><span></span>工具 (2)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (13)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2017, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+            <span>  
+              visits 
+<script type="text/javascript">
+var sc_project=11072857; 
+var sc_invisible=0; 
+var sc_security="98129f58"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="website
+statistics" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11072857/0/98129f58/0/"
+alt="website statistics"></a></div></noscript>
+
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

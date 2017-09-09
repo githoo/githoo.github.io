@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on babifarm.com</title>
+    <link>http://babifarm.com/tags/test/</link>
+    <description>Recent content in Test on babifarm.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 Sep 2017 10:06:46 -0700</lastBuildDate>
+    <atom:link href="http://babifarm.com/tags/test/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>gatling start</title>
+      <link>http://babifarm.com/post/2017/09/gatling-start/</link>
+      <pubDate>Sat, 09 Sep 2017 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2017/09/gatling-start/</guid>
+      <description>gatlint start gatling quick start http://gatling.io/docs/current/quickstart/ 源码： https://github.com/gatling/gatling#wiki-loops gatling下载地址： https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/2.2.5/gatling-charts-highcharts-bundle-2.2.5-bundle.zip gatling目录结构： bin目录下有2个脚本，gatling和recorder， gatling用来运行测试， recorder用来启动录制脚本的UI的（不推荐使用）， conf目录是关于Gatling自身的一些配置。 lib目录是Gatling自身依赖的库文件。 results目录用来存放测试报告的。 user-files目录是用来存放测试脚本的。 当运行gating脚本的时候，其会扫描user-files目录下的所有文件，列出其中所有的Simulation(一个测试类，里面可以包含任意多个测试场景) 执行压测： 执行gatling时，可通过参数制定具体执行那个实例，如如下： ./bin/gatling.sh -s scala文件的class名字 比如./bin/gatling.sh -s TestGet 录制脚本： 需要配置Internet的代理才能录制成功。录制完成之后代码保存在user-files/simulations/ 目录下 配置浏览器代理：https://my.oschina.net/u/2419564/blog/613048 压测QPS和持续时间设置： QPS为1 持续60秒 setUp( recall.inject(constantUsersPerSec(1) during (60 seconds)) ).protocols(httpProtocol) QPS为10000持续一小时 setUp( recall.inject(constantUsersPerSec(10000) during (3600 seconds)) ).protocols(httpProtocol) ​ Gatling的报表： GLOBAL和DETAILS，其中GLOBAL主要是请求相关的统计数据，比如每秒请求数，请求成功与失败数等；其中DETAILS主要是请求时间相关的统计数据，比如请求响应时间，请求响应延迟时间等 官方指南： http://gatling.io/docs/current/ *User’s guide** What’s New Migration Guides Quickstart Advanced Tutorial General Session HTTP JMS Realtime monitoring Extensions Cookbook Information</description>
+    </item>
+    
+  </channel>
+</rss>

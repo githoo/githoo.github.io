@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>gatling start | babifarm.com</title>
+  </head>
+  <body>    
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>gatling start</h1>
+      <div class="article-meta">
+        <span class="posttime">2017/09/09</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/test"><span></span>test</a>
+    </li>
+    
+    <li>
+      <a href="/tags/gatling"><span></span>gatling</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<h2 id="gatlint-start">gatlint start</h2>
+
+<ul>
+<li>gatling quick start</li>
+</ul>
+
+<p><a href="http://gatling.io/docs/current/quickstart/">http://gatling.io/docs/current/quickstart/</a></p>
+
+<ul>
+<li>源码：</li>
+</ul>
+
+<p><a href="https://github.com/gatling/gatling#wiki-loops">https://github.com/gatling/gatling#wiki-loops</a></p>
+
+<ul>
+<li><p>gatling下载地址：
+<a href="https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/2.2.5/gatling-charts-highcharts-bundle-2.2.5-bundle.zip">https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/2.2.5/gatling-charts-highcharts-bundle-2.2.5-bundle.zip</a></p></li>
+
+<li><p>gatling目录结构：</p>
+
+<ul>
+<li>bin目录下有2个脚本，gatling和recorder， gatling用来运行测试， recorder用来启动录制脚本的UI的（不推荐使用），</li>
+<li>conf目录是关于Gatling自身的一些配置。</li>
+<li>lib目录是Gatling自身依赖的库文件。</li>
+<li>results目录用来存放测试报告的。</li>
+<li>user-files目录是用来存放测试脚本的。</li>
+<li>当运行gating脚本的时候，其会扫描user-files目录下的所有文件，列出其中所有的Simulation(一个测试类，里面可以包含任意多个测试场景)</li>
+</ul></li>
+
+<li><p>执行压测：
+执行gatling时，可通过参数制定具体执行那个实例，如如下：
+./bin/gatling.sh -s scala文件的class名字
+比如./bin/gatling.sh -s TestGet</p></li>
+
+<li><p>录制脚本：</p>
+
+<ul>
+<li>需要配置Internet的代理才能录制成功。录制完成之后代码保存在user-files/simulations/ 目录下</li>
+<li>配置浏览器代理：<a href="https://my.oschina.net/u/2419564/blog/613048">https://my.oschina.net/u/2419564/blog/613048</a></li>
+</ul></li>
+
+<li><p>压测QPS和持续时间设置：</p></li>
+</ul>
+
+<p>QPS为1 持续60秒
+setUp(
+        recall.inject(constantUsersPerSec(1) during (60 seconds))
+    ).protocols(httpProtocol)</p>
+
+<p>QPS为10000持续一小时
+setUp(        recall.inject(constantUsersPerSec(10000) during (3600 seconds))
+    ).protocols(httpProtocol)
+​</p>
+
+<ul>
+<li>Gatling的报表：</li>
+</ul>
+
+<p>GLOBAL和DETAILS，其中GLOBAL主要是请求相关的统计数据，比如每秒请求数，请求成功与失败数等；其中DETAILS主要是请求时间相关的统计数据，比如请求响应时间，请求响应延迟时间等</p>
+
+<ul>
+<li>官方指南：</li>
+</ul>
+
+<p><a href="http://gatling.io/docs/current/">http://gatling.io/docs/current/</a></p>
+
+<p>*User’s guide**</p>
+
+<p><a href="http://gatling.io/docs/current/whats_new">What’s New</a></p>
+
+<p><a href="http://gatling.io/docs/current/migration_guides">Migration Guides</a></p>
+
+<p><a href="http://gatling.io/docs/current/quickstart">Quickstart</a></p>
+
+<p><a href="http://gatling.io/docs/current/advanced_tutorial">Advanced Tutorial</a></p>
+
+<p><a href="http://gatling.io/docs/current/general">General</a></p>
+
+<p><a href="http://gatling.io/docs/current/session">Session</a></p>
+
+<p><a href="http://gatling.io/docs/current/http">HTTP</a></p>
+
+<p><a href="http://gatling.io/docs/current/jms">JMS</a></p>
+
+<p><a href="http://gatling.io/docs/current/realtime_monitoring">Realtime monitoring</a></p>
+
+<p><a href="http://gatling.io/docs/current/extensions">Extensions</a></p>
+
+<p><a href="http://gatling.io/docs/current/cookbook">Cookbook</a></p>
+
+<p><a href="http://gatling.io/docs/current/developing_gatling">Information for Gatling Developers</a></p>
+
+<p><a href="http://gatling.io/docs/current/project">Project Information</a></p>
+
+<ul>
+<li>使用实例：</li>
+</ul>
+
+<p>下面主要通过一些压测实例介绍gatling的基本使用
+1、post 方式压测：</p>
+
+<pre><code>import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import io.gatling.jdbc.Predef._
+class TestPost extends Simulation {
+  val httpProtocol = http.baseURL(&quot;http://10.188.188.88:8088/&quot;)
+  //注意这里,设置提交内容type
+  val headers_json = Map(&quot;Content-Type&quot; -&gt; &quot;application/json&quot;)
+  val scn = scenario(&quot;test post&quot;) 
+    .exec(http(&quot;test_post&quot;)   //http 请求name
+      .post(&quot;test&quot;)     //post url
+      .headers(headers_json)  //设置body数据格式
+      //将json参数用StricngBody包起,并作为参数传递给function body()
+      .body(StringBody(&quot;{\&quot;content\&quot;:\&quot;改革开放三十年来，在祖国的逐步强大之下，我们快乐的成长\&quot;}&quot;)).asJSON)
+  
+  setUp(
+        scn.inject(constantUsersPerSec(1000) during (5 seconds))
+    ).protocols(httpProtocol)
+
+}
+</code></pre>
+
+<p>2、带参数的get方式压测：</p>
+
+<pre><code>import scala.concurrent.duration._
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
+
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import io.gatling.jdbc.Predef._
+
+class TestGet extends Simulation {
+	
+	object GetData {
+      		val feeder=tsv(&quot;sku-tag.csv&quot;).circular
+      		val recall = feed(feeder)
+        		.exec(http(&quot;test&quot;)
+	    		.get(&quot;/test?sku=${sku}&amp;tagid=${tagid}&amp;pin=joy&amp;pid=20001&amp;lid=111&amp;uuid=8888&quot;))
+    	}
+
+	val httpProtocol = http.baseURL(&quot;http://10.188.188.88:8088&quot;)
+		.inferHtmlResources()
+		.acceptHeader(&quot;application/json;q=0.9,*/*;q=0.8&quot;)
+		.acceptEncodingHeader(&quot;gzip, deflate&quot;)
+		.acceptLanguageHeader(&quot;en-US,en;q=0.5&quot;)
+		.doNotTrackHeader(&quot;1&quot;)
+        .disableFollowRedirect
+		.userAgentHeader(&quot;Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0&quot;)
+	val headers_0 = Map(
+		&quot;Pragma&quot; -&gt; &quot;no-cache&quot;,
+		&quot;Upgrade-Insecure-Requests&quot; -&gt; &quot;1&quot;)
+
+	val test = scenario(&quot;test&quot;).exec(GetData.recall)
+	setUp(
+        	test.inject(constantUsersPerSec(9000) during (600 seconds))
+    	).protocols(httpProtocol) 
+}
+</code></pre>
+
+<p>sku-tag.csv格式</p>
+
+<pre><code>sku	tagid
+1002880	2d9b98dbba99f729
+1002880	e73391bf8ddda234
+1002880	cdb704084604e664
+1002880	e50b8ea837b42365
+1003403	f8952a488a11ced2
+1003403	e2c719d0c61dc7a7
+1003403	6fcb75f7dcc4012b
+1003403	e73391bf8ddda234
+</code></pre>
+
+<p>3、数据库方式get压测：</p>
+
+<pre><code>import scala.concurrent.duration._
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import io.gatling.jdbc.Predef._
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Date
+import scala.util.Random
+class TestDB extends Simulation {
+
+    object GetData {
+      val format = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;)
+      val rnd = new Random
+      var flag = rnd.nextInt(18)
+      val feeder=jdbcFeeder(&quot;jdbc:mysql://10.188.188.136:3306/test&quot;, &quot;root&quot;, &quot;&quot;, &quot;select url,cookie from test.test_data limit &quot;+flag*2000000 +&quot;,2000000&quot;).circular
+      
+      val recall = feed(feeder)
+        .exec(http(&quot;Search&quot;)        
+		.get(&quot;${url}&quot;)
+        .header(&quot;Cookie&quot;, &quot;${cookie}&quot;)
+		.check(status.is(200)))        
+    }
+
+	val httpProtocol = http	      
+        .baseURL(&quot;http://10.188.188.88:8088&quot;)
+		//.inferHtmlResources()
+		.acceptHeader(&quot;application/json;q=0.9,*/*;q=0.8&quot;)
+		.acceptEncodingHeader(&quot;gzip, deflate&quot;)
+		.acceptLanguageHeader(&quot;en-US,en;q=0.5&quot;)
+		//.connection(&quot;keep-alive&quot;)
+		.doNotTrackHeader(&quot;1&quot;)
+        .disableFollowRedirect
+		.userAgentHeader(&quot;Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0&quot;)
+		
+	val test = scenario(&quot;test&quot;).exec(GetData.recall)
+
+	setUp(
+		test.inject(constantUsersPerSec(10000) during (36000 seconds))
+	).protocols(httpProtocol)
+}
+</code></pre>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/test"><span></span>test</a>
+    </li>
+    
+    <li>
+      <a href="/tags/gatling"><span></span>gatling</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+<div class="ds-thread" data-thread-key="" data-title="gatling start" data-url="http://babifarm.com/post/2017/09/gatling-start/"></div>
+
+
+
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"babi"};
+
+    (function() {
+     var ds = document.createElement('script');
+     ds.type = 'text/javascript';ds.async = true;
+     ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+     ds.charset = 'UTF-8';
+     (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+    </script>
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2017/09/java-profiler/">java profiler tool</a>
+        </div>
+        
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fishman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E5%B7%A5%E5%85%B7"><span></span>工具 (2)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (13)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2017, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+            <span>  
+              visits 
+<script type="text/javascript">
+var sc_project=11072857; 
+var sc_invisible=0; 
+var sc_security="98129f58"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="website
+statistics" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11072857/0/98129f58/0/"
+alt="website statistics"></a></div></noscript>
+
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
