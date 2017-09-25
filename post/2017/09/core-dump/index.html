@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>core dump | babifarm.com</title>
+  </head>
+  <body>    
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>core dump</h1>
+      <div class="article-meta">
+        <span class="posttime">2017/09/22</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/core"><span></span>core</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<h2 id="core-dump-定位分析">core dump 定位分析</h2>
+
+<p>core dump 日志分析  core.212160</p>
+
+<p>###1、定位core发生的位置：</p>
+
+<pre><code>gdb /export/servers/model/crf/so_lib/libCRFPP.so core.212160
+(gdb) bt
+#6  &lt;signal handler called&gt;
+#7  0x00007f269c2a34be in CRFPP::TaggerImpl::forwardbackward() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so
+#8  0x00007f269c2aad92 in CRFPP::TaggerImpl::parse() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so
+#9  0x00007f269c2a18f0 in Java_org_chasen_crfpp_CRFPPJNI_Tagger_1parse_1_1SWIG_10 ()
+   from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so
+</code></pre>
+
+<p>###2、定位dump的细节</p>
+
+<pre><code>objdump  -Cd /export/servers/model/crf/so_lib/libCRFPP.so &gt; tt.txt 
+
+cat tt.txt|grep &quot;forwardbackward&quot;
+[root@ckespam-e31e7701-2927318961-21969 App]# cat tt.txt|grep &quot;forwardbackward&quot;                                   
+0000000000010848 &lt;CRFPP::TaggerImpl::forwardbackward()@plt&gt;:
+0000000000027f40 &lt;CRFPP::TaggerImpl::forwardbackward()&gt;:
+   27f5a:       0f 84 98 01 00 00       je     280f8 &lt;CRFPP::TaggerImpl::forwardbackward()+0x1b8&gt;
+   27f7a:       7e 65                   jle    27fe1 &lt;CRFPP::TaggerImpl::forwardbackward()+0xa1&gt;
+   27f95:       74 2f                   je     27fc6 &lt;CRFPP::TaggerImpl::forwardbackward()+0x86&gt;
+   27fbc:       77 e2                   ja     27fa0 &lt;CRFPP::TaggerImpl::forwardbackward()+0x60&gt;
+   27fdf:       7c af                   jl     27f90 &lt;CRFPP::TaggerImpl::forwardbackward()+0x50&gt;
+   27fe6:       78 56                   js     2803e &lt;CRFPP::TaggerImpl::forwardbackward()+0xfe&gt;
+   28005:       74 27                   je     2802e &lt;CRFPP::TaggerImpl::forwardbackward()+0xee&gt;
+   2802c:       77 e2                   ja     28010 &lt;CRFPP::TaggerImpl::forwardbackward()+0xd0&gt;
+   2803c:       79 c2                   jns    28000 &lt;CRFPP::TaggerImpl::forwardbackward()+0xc0&gt;
+   2804b:       0f 84 a7 00 00 00       je     280f8 &lt;CRFPP::TaggerImpl::forwardbackward()+0x1b8&gt;
+   2807d:       76 79                   jbe    280f8 &lt;CRFPP::TaggerImpl::forwardbackward()+0x1b8&gt;
+   28092:       74 74                   je     28108 &lt;CRFPP::TaggerImpl::forwardbackward()+0x1c8&gt;
+   280b0:       77 be                   ja     28070 &lt;CRFPP::TaggerImpl::forwardbackward()+0x130&gt;
+   280ef:       77 8e                   ja     2807f &lt;CRFPP::TaggerImpl::forwardbackward()+0x13f&gt;
+   2810c:       e9 5f ff ff ff          jmpq   28070 &lt;CRFPP::TaggerImpl::forwardbackward()+0x130&gt;
+   28628:       e8 1b 82 fe ff          callq  10848 &lt;CRFPP::TaggerImpl::forwardbackward()@plt&gt;
+   2b04c:       e8 f7 57 fe ff          callq  10848 &lt;CRFPP::TaggerImpl::forwardbackward()@plt&gt;
+</code></pre>
+
+<p>###3、定位行号</p>
+
+<pre><code>addr2line  -i -e /export/servers/model/crf/so_lib/libCRFPP.so   0x地址
+
+[root@ckespam-e31e7701-2927318961-21969 App]# addr2line  -i -e /export/servers/model/crf/so_lib/libCRFPP.so  0x28628
+/export/fisher/crfpp-master/tagger.cpp:571
+[root@ckespam-e31e7701-2927318961-21969 App]# addr2line  -i -e /export/servers/model/crf/so_lib/libCRFPP.so  0x2b04c
+/export/fisher/crfpp-master/tagger.cpp:675
+</code></pre>
+
+<p>###4、源码定位</p>
+
+<pre><code>bool TaggerImpl::parse() {
+  CHECK_FALSE(feature_index_-&gt;buildFeatures(this))
+      &lt;&lt; feature_index_-&gt;what();
+
+  if (x_.empty()) {
+    return true;
+  }
+  buildLattice();
+  if (nbest_ || vlevel_ &gt;= 1) {
+    forwardbackward();
+  }
+  viterbi();
+  if (nbest_) {
+    initNbest();
+  }
+
+  return true;
+}
+
+ 
+double TaggerImpl::gradient(double *expected) {
+  if (x_.empty()) return 0.0;
+
+  buildLattice();
+  forwardbackward();
+  double s = 0.0;
+
+  for (size_t i = 0;   i &lt; x_.size(); ++i) {
+    for (size_t j = 0; j &lt; ysize_; ++j) {
+      node_[i][j]-&gt;calcExpectation(expected, Z_, ysize_);
+    }
+  }
+
+  for (size_t i = 0;   i &lt; x_.size(); ++i) {
+    for (const int *f = node_[i][answer_[i]]-&gt;fvector; *f != -1; ++f) {
+      --expected[*f + answer_[i]];
+    }
+    s += node_[i][answer_[i]]-&gt;cost;  // UNIGRAM cost
+    const std::vector&lt;Path *&gt; &amp;lpath = node_[i][answer_[i]]-&gt;lpath;
+    for (const_Path_iterator it = lpath.begin(); it != lpath.end(); ++it) {
+      if ((*it)-&gt;lnode-&gt;y == answer_[(*it)-&gt;lnode-&gt;x]) {
+        for (const int *f = (*it)-&gt;fvector; *f != -1; ++f) {
+          --expected[*f +(*it)-&gt;lnode-&gt;y * ysize_ +(*it)-&gt;rnode-&gt;y];
+        }
+        s += (*it)-&gt;cost;  // BIGRAM COST
+        break;
+      }
+    }
+  }
+
+  viterbi();  // call for eval()
+
+  return Z_ - s ;
+}
+
+void TaggerImpl::forwardbackward() {
+  if (x_.empty()) {
+    return;
+  }
+
+  for (int i = 0; i &lt; static_cast&lt;int&gt;(x_.size()); ++i) {
+    for (size_t j = 0; j &lt; ysize_; ++j) {
+      node_[i][j]-&gt;calcAlpha();
+    }
+  }
+
+  for (int i = static_cast&lt;int&gt;(x_.size() - 1); i &gt;= 0;  --i) {
+    for (size_t j = 0; j &lt; ysize_; ++j) {
+      node_[i][j]-&gt;calcBeta();
+    }
+  }
+
+  Z_ = 0.0;
+  for (size_t j = 0; j &lt; ysize_; ++j) {
+    Z_ = logsumexp(Z_, node_[0][j]-&gt;beta, j == 0);
+  }
+
+  return;
+}
+</code></pre>
+
+<p>定位到forwardbackward();函数产生core地方，node_[i][j] 可能为空导致core dump。</p>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/core"><span></span>core</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+<div class="ds-thread" data-thread-key="" data-title="core dump" data-url="http://babifarm.com/post/2017/09/core-dump/"></div>
+
+
+
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"babi"};
+
+    (function() {
+     var ds = document.createElement('script');
+     ds.type = 'text/javascript';ds.async = true;
+     ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+     ds.charset = 'UTF-8';
+     (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+    </script>
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2017/09/gatling-start/">gatling start</a>
+        </div>
+        
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fisherman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E5%B7%A5%E5%85%B7"><span></span>工具 (2)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (14)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2017, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+            <span>  
+              visits 
+<script type="text/javascript">
+var sc_project=11072857; 
+var sc_invisible=0; 
+var sc_security="98129f58"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="website
+statistics" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11072857/0/98129f58/0/"
+alt="website statistics"></a></div></noscript>
+
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

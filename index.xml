@@ -6,8 +6,17 @@
     <description>Recent content on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 Sep 2017 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 22 Sep 2017 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>core dump</title>
+      <link>http://babifarm.com/post/2017/09/core-dump/</link>
+      <pubDate>Fri, 22 Sep 2017 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2017/09/core-dump/</guid>
+      <description>core dump 定位分析 core dump 日志分析 core.212160 ###1、定位core发生的位置： gdb /export/servers/model/crf/so_lib/libCRFPP.so core.212160 (gdb) bt #6 &amp;lt;signal handler called&amp;gt; #7 0x00007f269c2a34be in CRFPP::TaggerImpl::forwardbackward() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so #8 0x00007f269c2aad92 in CRFPP::TaggerImpl::parse() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so #9 0x00007f269c2a18f0 in Java_org_chasen_crfpp_CRFPPJNI_Tagger_1parse_1_1SWIG_10 () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so ###2、定位dump的细节 objdump -Cd /export/servers/model/crf/so_lib/libCRFPP.so &amp;gt; tt.txt cat tt.txt|grep &amp;quot;forwardbackward&amp;quot; [root@ckespam-e31e7701-2927318961-21969 App]# cat tt.txt|grep &amp;quot;forwardbackward&amp;quot; 0000000000010848 &amp;lt;CRFPP::TaggerImpl::forwardbackward()@plt&amp;gt;: 0000000000027f40 &amp;lt;CRFPP::TaggerImpl::forwardbackward()&amp;gt;: 27f5a: 0f 84 98 01 00 00 je 280f8 &amp;lt;CRFPP::TaggerImpl::forwardbackward()+0x1b8&amp;gt; 27f7a: 7e 65 jle</description>
+    </item>
     
     <item>
       <title>gatling start</title>
@@ -133,15 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
       <description>github pages部署个人博客 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建和部署 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
-    </item>
-    
-    <item>
-      <title>使用hugo搭建博客教程（一）</title>
-      <link>http://babifarm.com/post/2016/08/hugo-start-guide/</link>
-      <pubDate>Mon, 01 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hugo-start-guide/</guid>
-      <description>hugo 初体验 hugo安装： 下载： https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz 安装： tar xzvf hugo_0.16_linux-64bit.tgz -C hugo_0.16_linux hugo使用： 建网站： $ hugo new site mysite $ cd mysite 在该目录下你可以看到以下几个目录和 config.toml 文件 ▸ archetypes/ ▸ content/ ▸ layouts/ ▸ static/ config.toml config.toml 是网站的配置文件，包括 baseurl , title , copyright 等等网站参数。 这几个文件夹的作用分别是： archetypes：包括内容类型，在创建新内容时自动生成内容的配置 content：包括网站内容，全部使用markdown格式 layouts：包括了网站的模版，决定内容如何呈现 static：包括了css, js, fonts, media等，决定网站的外观 创建新页面： $ hugo new about.md 相关操作都在mysite目录下，否则会报错； 进入 content/ 文件夹可以看到，此时多了一个markdown格式的文件 about.md ，打开文件可以看到时间和文件名等信息已经自动加到文件开头，包括创建时间，页面名，是否为草稿等。 下载主题： $ git clone https://github.com/spf13/hyde.git 运行Hugo: $ hugo server -t</description>
     </item>
     
   </channel>

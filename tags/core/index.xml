@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Core on babifarm.com</title>
+    <link>http://babifarm.com/tags/core/</link>
+    <description>Recent content in Core on babifarm.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 22 Sep 2017 10:06:46 -0700</lastBuildDate>
+    <atom:link href="http://babifarm.com/tags/core/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>core dump</title>
+      <link>http://babifarm.com/post/2017/09/core-dump/</link>
+      <pubDate>Fri, 22 Sep 2017 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2017/09/core-dump/</guid>
+      <description>core dump 定位分析 core dump 日志分析 core.212160 ###1、定位core发生的位置： gdb /export/servers/model/crf/so_lib/libCRFPP.so core.212160 (gdb) bt #6 &amp;lt;signal handler called&amp;gt; #7 0x00007f269c2a34be in CRFPP::TaggerImpl::forwardbackward() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so #8 0x00007f269c2aad92 in CRFPP::TaggerImpl::parse() () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so #9 0x00007f269c2a18f0 in Java_org_chasen_crfpp_CRFPPJNI_Tagger_1parse_1_1SWIG_10 () from /tmp/crfpp-java-0.57-fcac54dc-13d1-48a4-b76d-b2941f15da0d-libCRFPP.so ###2、定位dump的细节 objdump -Cd /export/servers/model/crf/so_lib/libCRFPP.so &amp;gt; tt.txt cat tt.txt|grep &amp;quot;forwardbackward&amp;quot; [root@ckespam-e31e7701-2927318961-21969 App]# cat tt.txt|grep &amp;quot;forwardbackward&amp;quot; 0000000000010848 &amp;lt;CRFPP::TaggerImpl::forwardbackward()@plt&amp;gt;: 0000000000027f40 &amp;lt;CRFPP::TaggerImpl::forwardbackward()&amp;gt;: 27f5a: 0f 84 98 01 00 00 je 280f8 &amp;lt;CRFPP::TaggerImpl::forwardbackward()+0x1b8&amp;gt; 27f7a: 7e 65 jle</description>
+    </item>
+    
+  </channel>
+</rss>
