@@ -6,8 +6,17 @@
     <description>Recent content on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 22 Sep 2017 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jan 2018 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>tensorflow-gpu install</title>
+      <link>http://babifarm.com/post/2018/01/tensorflow-gpu-install/</link>
+      <pubDate>Mon, 15 Jan 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/01/tensorflow-gpu-install/</guid>
+      <description>centos7下安装tensorflow-gup cuda8、cudnn8、tensorflow-gup安装过程： 1、下载相关软件 下载cuda8.0 wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run 下载cudnn8.0 wget http://124.205.69.163/files/2088000005D75759/developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v7/prod/8.0_20170802/cudnn-8.0-linux-x64-v7.tgz 2、安装cuda8.0 sh cuda_8.0.61_375.26_linux-run Do you accept the previously read EULA? accept/decline/quit: accept Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 387.26? (y)es/(n)o/(q)uit: y Install the CUDA 8.0 Toolkit? (y)es/(n)o/(q)uit: y Enter Toolkit Location Do you want to install a symbolic link at /usr/local/cuda? (y)es/(n)o/(q)uit: y Install the CUDA 8.0 Samples? (y)es/(n)o/(q)uit: y Enter CUDA Samples Location Installing the CUDA Toolkit in /usr/local/cuda-8.0 ...</description>
+    </item>
     
     <item>
       <title>core dump</title>
@@ -133,15 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/wiki-gollum/</guid>
       <description>1.安装RVM https://rvm.io/ ssh admin@192.168.1.1 curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile 2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改) sed -i -e &#39;s/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g&#39; ~/.rvm/config/db 3.安装系统依赖包 CentOS yum install libicu libicu-devel zlib zlib-devel git 4.安装python 2.7+ (一般系统都有自带) 5.安装ruby 1.9.3+ rvm install 1.9.3 rvm list //可以查看目前已经安装的包 rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认 rvm remove 1.9.0 //卸载一个不用的版本 6.安装gollum gem install gollum 7.配置git仓库 ssh admin@192.168.1.2 cd /export/App mkdir wiki.git cd wiki.git git init --bare</description>
-    </item>
-    
-    <item>
-      <title>使用hugo搭建博客教程（二）</title>
-      <link>http://babifarm.com/post/2016/08/hosting-github-pages/</link>
-      <pubDate>Mon, 01 Aug 2016 07:40:35 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
-      <description>github pages部署个人博客 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建和部署 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
     </item>
     
   </channel>

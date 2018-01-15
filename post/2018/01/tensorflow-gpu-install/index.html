@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="Hugo 0.16" />
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="babifarm.com" />
+    <link href="/index.xml" rel="feed" type="application/rss+xml" title="babifarm.com" />
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+    <script src="https://apis.google.com/js/platform.js" async defer>{lang: 'ja'}</script>
+    
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <title>tensorflow-gpu install | babifarm.com</title>
+  </head>
+  <body>    
+    <div id="wrap">
+      
+      <header class="site-header">
+        <div class="site-header-left">
+          <a class="site-header-title" href="http://babifarm.com/">babifarm.com</a>
+        </div>
+      </header>
+      <div class="container">
+        <div id="main">
+
+<div class="article">
+  <header>
+    <div class="article-header">
+      <h1>tensorflow-gpu install</h1>
+      <div class="article-meta">
+        <span class="posttime">2018/01/15</span>
+        
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/core"><span></span>core</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+  </header>
+  <div class="content">
+    
+
+<h1 id="centos7下安装tensorflow-gup">centos7下安装tensorflow-gup</h1>
+
+<p>cuda8、cudnn8、tensorflow-gup安装过程：</p>
+
+<h3 id="1-下载相关软件">1、下载相关软件</h3>
+
+<p>下载cuda8.0
+wget <a href="https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run">https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run</a></p>
+
+<p>下载cudnn8.0
+wget <a href="http://124.205.69.163/files/2088000005D75759/developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v7/prod/8.0_20170802/cudnn-8.0-linux-x64-v7.tgz">http://124.205.69.163/files/2088000005D75759/developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v7/prod/8.0_20170802/cudnn-8.0-linux-x64-v7.tgz</a></p>
+
+<h3 id="2-安装cuda8-0">2、安装cuda8.0</h3>
+
+<p>sh cuda_8.0.61_375.26_linux-run</p>
+
+<pre><code>Do you accept the previously read EULA?
+accept/decline/quit: accept
+
+Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 387.26?
+(y)es/(n)o/(q)uit: y
+
+Install the CUDA 8.0 Toolkit?
+(y)es/(n)o/(q)uit: y
+
+Enter Toolkit Location
+
+Do you want to install a symbolic link at /usr/local/cuda?
+(y)es/(n)o/(q)uit: y
+
+Install the CUDA 8.0 Samples?
+(y)es/(n)o/(q)uit: y
+
+Enter CUDA Samples Location
+
+Installing the CUDA Toolkit in /usr/local/cuda-8.0 ...
+
+Missing recommended library: libGLU.so
+Missing recommended library: libX11.so
+Missing recommended library: libXi.so
+Missing recommended library: libXmu.so
+Missing recommended library: libGL.so
+
+
+ Installing the CUDA Samples in /root ...
+Copying samples to /root/NVIDIA_CUDA-8.0_Samples now...
+Finished copying samples.
+
+= Summary = 
+
+Driver:   Not Selected
+Toolkit:  Installed in /usr/local/cuda-8.0
+Samples:  Installed in /root, but missing recommended libraries
+
+Please make sure that
+ -   PATH includes /usr/local/cuda-8.0/bin
+ -   LD_LIBRARY_PATH includes /usr/local/cuda-8.0/lib64, or, add /usr/local/cuda-8.0/lib64 to /etc/ld.so.conf and run ldconfig as root
+
+To uninstall the CUDA Toolkit, run the uninstall script in /usr/local/cuda-8.0/bin
+
+Please see CUDA_Installation_Guide_Linux.pdf in /usr/local/cuda-8.0/doc/pdf for detailed information on setting up CUDA.
+
+Logfile is /tmp/cuda_install_10321.log
+</code></pre>
+
+<h3 id="3-设置环境变量">3、设置环境变量</h3>
+
+<pre><code>vim /etc/profile
+export LD_LIBRARY_PATH=&quot;$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64&quot;
+export CUDA_HOME=/usr/local/cuda
+</code></pre>
+
+<h3 id="4-测试cuda">4、测试cuda</h3>
+
+<pre><code>cd /usr/local/cuda/samples/1_Utilities/deviceQuery
+make
+./deviceQuery 
+</code></pre>
+
+<pre><code>deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 8.0, CUDA Runtime Version = 8.0, NumDevs = 4, Device0 = Tesla P40, Device1 = Tesla P40, Device2 = Tesla P40, Device3 = Tesla P40
+Result = PASS
+</code></pre>
+
+<h3 id="5-安装cudnn8-0">5、安装cudnn8.0</h3>
+
+<pre><code>tar -zxf cudnn-8.0-linux-x64-v7.tgz
+cd  cuda
+cp -P lib64/* /usr/local/cuda/lib64/
+cp -P include/* /usr/local/cuda/include/
+chmod a+r /usr/local/cuda/lib64/libcudnn*
+注：-P参数是为了保留软链接
+</code></pre>
+
+<h3 id="6-安装tensorflow-gpu">6、安装tensorflow-gpu</h3>
+
+<pre><code>yum install python-pip python-dev
+pip install --upgrade pip
+pip install --upgrade tensorflow-gpu 
+</code></pre>
+
+<h3 id="7-验证tensorflow">7、验证tensorflow</h3>
+
+<pre><code>&gt;&gt;&gt; import tensorflow
+&gt;&gt;&gt; import tensorflow as tf
+&gt;&gt;&gt; tf.__version__
+&gt;&gt;&gt; '1.4.1'
+&gt;&gt;&gt; tf.__path__
+&gt;&gt;&gt; ['/usr/lib/python2.7/site-packages/tensorflow']
+</code></pre>
+
+<h3 id="8-相关问题及解决">8、相关问题及解决：</h3>
+
+<p>问题：
+python 环境import  tensorflow  时候，却出现的错误ImportError: libcudnn.so.6: cannot open shared object file: No such file or directory
+解决：</p>
+
+<pre><code>cd /usr/local/cuda/lib64/
+ln -s libcudnn.so.7 libcudnn.so.6
+</code></pre>
+
+<p>卸载cuda：</p>
+
+<pre><code>/usr/local/cuda-8.0/bin/uninstall_cuda_8.0.pl
+</code></pre>
+
+<p>卸载nvidia driver:</p>
+
+<pre><code>/usr/bin/nvidia-uninstall
+</code></pre>
+
+<h3 id="9-相关检查命令">9、相关检查命令</h3>
+
+<pre><code>nvcc --version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2017 NVIDIA Corporation
+Built on Fri_Nov__3_21:07:56_CDT_2017
+Cuda compilation tools, release 9.1, V9.1.85
+</code></pre>
+
+<pre><code>nvidia-smi
+Mon Jan 15 10:05:48 2018       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 375.26                 Driver Version: 375.26                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla P40           Off  | 0000:02:00.0     Off |                    0 |
+| N/A   21C    P0    49W / 250W |      0MiB / 22912MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla P40           Off  | 0000:03:00.0     Off |                    0 |
+| N/A   22C    P0    49W / 250W |      0MiB / 22912MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   2  Tesla P40           Off  | 0000:83:00.0     Off |                    0 |
+| N/A   23C    P0    48W / 250W |      0MiB / 22912MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   3  Tesla P40           Off  | 0000:84:00.0     Off |                    0 |
+| N/A   23C    P0    46W / 250W |      0MiB / 22912MiB |      2%      Default |
++-------------------------------+----------------------+----------------------+
+</code></pre>
+
+<h3 id="10-安装cuda参考">10、安装cuda参考</h3>
+
+<p><a href="http://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#runfile">http://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#runfile</a></p>
+
+  </div>
+  <footer>
+    <div class="article-footer">
+      
+<div class="tags">
+  <ul>
+    
+    <li>
+      <a href="/tags/core"><span></span>core</a>
+    </li>
+    
+  </ul>
+</div>
+
+
+      
+      
+<div id="share-buttons">
+  <ul>
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+
+      
+<div class="ds-thread" data-thread-key="" data-title="tensorflow-gpu install" data-url="http://babifarm.com/post/2018/01/tensorflow-gpu-install/"></div>
+
+
+
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"babi"};
+
+    (function() {
+     var ds = document.createElement('script');
+     ds.type = 'text/javascript';ds.async = true;
+     ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+     ds.charset = 'UTF-8';
+     (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+    </script>
+
+      
+      
+      <div id="pagenavigation-next-prev">
+        
+        <div id="pagenavigation-next">
+          <span class="pagenav-label">Previous</span>
+          <a href="http://babifarm.com/post/2017/09/core-dump/">core dump</a>
+        </div>
+        
+        
+      </div>
+      
+    </div>
+  </footer>
+</div>
+        </div>
+        <div class="sidebar">
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Author</span>
+    </div>
+    <div id="author">
+      <span>fisherman</span>
+      <div>
+        
+        
+        <a href="https://github.com/githoo"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>Categories</span>
+    </div>
+    <div class="categories">
+      <ul>
+        
+        <li>
+          <a href="/categories/about"><span></span>about (1)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E5%B7%A5%E5%85%B7"><span></span>工具 (2)</a>
+        </li>
+        
+        <li>
+          <a href="/categories/%E6%8A%80%E6%9C%AF"><span></span>技术 (15)</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <span>RSS</span>
+    </div>
+    <div id="rss">
+      <a href="/index.xml" type="application/rss+xml" target="_blank">
+        <i class="fa fa-rss-square fa-2x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <footer>
+        <div id="site-footer-wrap">
+          <div id="site-footer">
+            <span>Powered by <a href="https://gohugo.io/">Hugo</a>.</span>
+            <span>
+              
+              Copyright (c) 2018, <a href="http://babifarm.com/">babifarm.com</a>
+              
+            </span>
+            <span>  
+              visits 
+<script type="text/javascript">
+var sc_project=11072857; 
+var sc_invisible=0; 
+var sc_security="98129f58"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+"https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="website
+statistics" href="http://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="//c.statcounter.com/11072857/0/98129f58/0/"
+alt="website statistics"></a></div></noscript>
+
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
