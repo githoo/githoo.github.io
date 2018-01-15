@@ -77,9 +77,9 @@
 
 <p>wget <a href="https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run">https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run</a></p>
 
-<p>下载cudnn8.0</p>
+<p>下载cudnn8.0-v6.0</p>
 
-<p>wget <a href="http://124.205.69.163/files/2088000005D75759/developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v7/prod/8.0_20170802/cudnn-8.0-linux-x64-v7.tgz">http://124.205.69.163/files/2088000005D75759/developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v7/prod/8.0_20170802/cudnn-8.0-linux-x64-v7.tgz</a></p>
+<p>wget <a href="http://developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v6/prod/8.0_20170427/cudnn-8.0-linux-x64-v6.0.tgz?yQ3tYwXxUZLlPzHDcsdoKYsza8ARGpYxi6k1Knhuhr-ZOKb5z4schgCD8kJF8LKCbYKRFniqc3_5rMpPPsZlGz1EBe_5GKe3KevXpgG6-Q0akSJByfXqqB0lH1wsl1c1rBJ4eZzVgX9GuGZpt5oXDMEjnwJoPGFLE7OaWBgMSpABsTdq8iuhumtn9ZV6pRByDN7JKbZD">http://developer2.download.nvidia.com/compute/machine-learning/cudnn/secure/v6/prod/8.0_20170427/cudnn-8.0-linux-x64-v6.0.tgz?yQ3tYwXxUZLlPzHDcsdoKYsza8ARGpYxi6k1Knhuhr-ZOKb5z4schgCD8kJF8LKCbYKRFniqc3_5rMpPPsZlGz1EBe_5GKe3KevXpgG6-Q0akSJByfXqqB0lH1wsl1c1rBJ4eZzVgX9GuGZpt5oXDMEjnwJoPGFLE7OaWBgMSpABsTdq8iuhumtn9ZV6pRByDN7JKbZD</a></p>
 
 <h3 id="2-安装cuda8-0">2、安装cuda8.0</h3>
 
@@ -152,9 +152,9 @@ make
 Result = PASS
 </code></pre>
 
-<h3 id="5-安装cudnn8-0">5、安装cudnn8.0</h3>
+<h3 id="5-安装cudnn8-0-v6-0">5、安装cudnn8.0-v6.0</h3>
 
-<pre><code>tar -zxf cudnn-8.0-linux-x64-v7.tgz
+<pre><code>tar -zxf cudnn-8.0-linux-x64-v6.0.tgz
 cd  cuda
 cp -P lib64/* /usr/local/cuda/lib64/
 cp -P include/* /usr/local/cuda/include/
@@ -179,15 +179,7 @@ pip install --upgrade tensorflow-gpu
 &gt;&gt;&gt; ['/usr/lib/python2.7/site-packages/tensorflow']
 </code></pre>
 
-<h3 id="8-相关问题及解决">8、相关问题及解决：</h3>
-
-<p>问题：
-python 环境import  tensorflow  时候，却出现的错误ImportError: libcudnn.so.6: cannot open shared object file: No such file or directory
-解决：</p>
-
-<pre><code>cd /usr/local/cuda/lib64/
-ln -s libcudnn.so.7 libcudnn.so.6
-</code></pre>
+<h3 id="8-相关问题">8、相关问题：</h3>
 
 <p>卸载cuda：</p>
 
