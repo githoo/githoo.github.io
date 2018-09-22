@@ -6,8 +6,17 @@
     <description>Recent content on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jan 2018 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 22 Sep 2018 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>TFServing-gpu deploy</title>
+      <link>http://babifarm.com/post/2018/09/TFServing-gpu&#43;deploy/</link>
+      <pubDate>Sat, 22 Sep 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/09/TFServing-gpu&#43;deploy/</guid>
+      <description>TFServing gpu 服务环境搭建 TFServing_docker-ce_nvidia-docker_nvidia-dirver_cuda_cudnn安装过程： 1、docker-ce install from:https://stackoverflow.com/questions/42981114/install-docker-ce-17-03-on-rhel7/45033117#45033117 #yum remove docker docker-common container-selinux docker-selinux docker-engine yum install -y yum-utils wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm rpm -ivh epel-release-latest-7.noarch.rpm subscription-manager repos --enable=rhel-7-server-extras-rpms yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.55-1.el7.noarch.rpm yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo yum install -y docker-ce systemctl restart docker systemctl status docker.service 2、nvidia-docker install from:https://blog.csdn.net/itaacy/article/details/72628792 wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker-1.0.1-1.x86_64.rpm rpm -i /tmp/nvidia-docker*.rpm &amp;amp;&amp;amp; rm /tmp/nvidia-docker*.rpm systemctl start nvidia-docker #check nvidia-docker run --rm nvidia/cuda nvidia-smi 3、cuda install #https://developer.nvidia.com/cuda-toolkit-archive wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run sh cuda_9.0.176_384.81_linux-run #安装过程中: #Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 384.81？ (y)es/(n)o/(q)uit:n #注意：此步选择y，其余选y或者default即可 4、cudnn install #先从官方下载cudnn，解压后进行如下操作 cp cudnn/include/cudnn.h /usr/local/cuda-9.0/include cp cudnn/lib64/libcudnn* /usr/local/cuda-9.0/lib64 chmod a+r /usr/local/cuda-9.0/include/cudnn.h /usr/local/cuda-9.0/lib64/libcudnn* 5、TFServing deploy 启动TFServing: #模型路径 /root/predictproductword nvidia-docker run -p 10001:8501 -p 10000:8500 -v /root/predictproductword:/models/predictproductword -e MODEL_NAME=predictproductword -t tensorflow/serving:latest-gpu 启动日志： 08:53:40.758380: I tensorflow_serving/core/loader_harness.cc:86] Successfully loaded servable version {name: predictproductword version: 1} 08:53:40.806719: I tensorflow_serving/model_servers/main.cc:327] Running ModelServer at 0.0.0.0:8500 ...</description>
+    </item>
     
     <item>
       <title>tensorflow-gpu install</title>
@@ -133,15 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/scala-study/</guid>
       <description>http://www.scala-lang.org 为什么要用Scala The central drive behind Scala is to make life easier and more productive for the developer 教程 http://www.scala-tour.com/#/welcomes http://www.runoob.com/scala/scala-collections.html</description>
-    </item>
-    
-    <item>
-      <title>wiki-gollum 安装说明</title>
-      <link>http://babifarm.com/post/2016/08/wiki-gollum/</link>
-      <pubDate>Tue, 02 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/wiki-gollum/</guid>
-      <description>1.安装RVM https://rvm.io/ ssh admin@192.168.1.1 curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile 2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改) sed -i -e &#39;s/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g&#39; ~/.rvm/config/db 3.安装系统依赖包 CentOS yum install libicu libicu-devel zlib zlib-devel git 4.安装python 2.7+ (一般系统都有自带) 5.安装ruby 1.9.3+ rvm install 1.9.3 rvm list //可以查看目前已经安装的包 rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认 rvm remove 1.9.0 //卸载一个不用的版本 6.安装gollum gem install gollum 7.配置git仓库 ssh admin@192.168.1.2 cd /export/App mkdir wiki.git cd wiki.git git init --bare</description>
     </item>
     
   </channel>

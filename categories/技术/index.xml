@@ -6,8 +6,17 @@
     <description>Recent content in 技术 on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jan 2018 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 22 Sep 2018 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>TFServing-gpu deploy</title>
+      <link>http://babifarm.com/post/2018/09/TFServing-gpu&#43;deploy/</link>
+      <pubDate>Sat, 22 Sep 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/09/TFServing-gpu&#43;deploy/</guid>
+      <description>TFServing gpu 服务环境搭建 TFServing_docker-ce_nvidia-docker_nvidia-dirver_cuda_cudnn安装过程： 1、docker-ce install from:https://stackoverflow.com/questions/42981114/install-docker-ce-17-03-on-rhel7/45033117#45033117 #yum remove docker docker-common container-selinux docker-selinux docker-engine yum install -y yum-utils wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm rpm -ivh epel-release-latest-7.noarch.rpm subscription-manager repos --enable=rhel-7-server-extras-rpms yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.55-1.el7.noarch.rpm yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo yum install -y docker-ce systemctl restart docker systemctl status docker.service 2、nvidia-docker install from:https://blog.csdn.net/itaacy/article/details/72628792 wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker-1.0.1-1.x86_64.rpm rpm -i /tmp/nvidia-docker*.rpm &amp;amp;&amp;amp; rm /tmp/nvidia-docker*.rpm systemctl start nvidia-docker #check nvidia-docker run --rm nvidia/cuda nvidia-smi 3、cuda install #https://developer.nvidia.com/cuda-toolkit-archive wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run sh cuda_9.0.176_384.81_linux-run #安装过程中: #Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 384.81？ (y)es/(n)o/(q)uit:n #注意：此步选择y，其余选y或者default即可 4、cudnn install #先从官方下载cudnn，解压后进行如下操作 cp cudnn/include/cudnn.h /usr/local/cuda-9.0/include cp cudnn/lib64/libcudnn* /usr/local/cuda-9.0/lib64 chmod a+r /usr/local/cuda-9.0/include/cudnn.h /usr/local/cuda-9.0/lib64/libcudnn* 5、TFServing deploy 启动TFServing: #模型路径 /root/predictproductword nvidia-docker run -p 10001:8501 -p 10000:8500 -v /root/predictproductword:/models/predictproductword -e MODEL_NAME=predictproductword -t tensorflow/serving:latest-gpu 启动日志： 08:53:40.758380: I tensorflow_serving/core/loader_harness.cc:86] Successfully loaded servable version {name: predictproductword version: 1} 08:53:40.806719: I tensorflow_serving/model_servers/main.cc:327] Running ModelServer at 0.0.0.0:8500 ...</description>
+    </item>
     
     <item>
       <title>tensorflow-gpu install</title>
@@ -133,15 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
       <description>github pages部署个人博客 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建和部署 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
-    </item>
-    
-    <item>
-      <title>使用hugo搭建博客教程（一）</title>
-      <link>http://babifarm.com/post/2016/08/hugo-start-guide/</link>
-      <pubDate>Mon, 01 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hugo-start-guide/</guid>
-      <description>hugo 初体验 hugo安装： 下载： https://github.com/spf13/hugo/releases/download/v0.16/hugo_0.16_linux-64bit.tgz 安装： tar xzvf hugo_0.16_linux-64bit.tgz -C hugo_0.16_linux hugo使用： 建网站： $ hugo new site mysite $ cd mysite 在该目录下你可以看到以下几个目录和 config.toml 文件 ▸ archetypes/ ▸ content/ ▸ layouts/ ▸ static/ config.toml config.toml 是网站的配置文件，包括 baseurl , title , copyright 等等网站参数。 这几个文件夹的作用分别是： archetypes：包括内容类型，在创建新内容时自动生成内容的配置 content：包括网站内容，全部使用markdown格式 layouts：包括了网站的模版，决定内容如何呈现 static：包括了css, js, fonts, media等，决定网站的外观 创建新页面： $ hugo new about.md 相关操作都在mysite目录下，否则会报错； 进入 content/ 文件夹可以看到，此时多了一个markdown格式的文件 about.md ，打开文件可以看到时间和文件名等信息已经自动加到文件开头，包括创建时间，页面名，是否为草稿等。 下载主题： $ git clone https://github.com/spf13/hyde.git 运行Hugo: $ hugo server -t</description>
     </item>
     
   </channel>
