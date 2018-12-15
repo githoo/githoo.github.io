@@ -6,8 +6,17 @@
     <description>Recent content in 技术 on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Sep 2018 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 15 Dec 2018 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>TFServing models deploy</title>
+      <link>http://babifarm.com/post/2018/12/tensorflow_Serving_models_deploy/</link>
+      <pubDate>Sat, 15 Dec 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/12/tensorflow_Serving_models_deploy/</guid>
+      <description>Tensorflow Serving 多模型部署 1、单模型方式 多个单模型启动： #单模型 root_path=&#39;/export/mtfs/TF&#39; docker run -p 10004:8501 -p 10005:8500 -v $root_path/corepw_model:/models/corepw_model -e MODEL_NAME=corepw_model -t tensorflow/serving &amp;amp;&amp;gt; my_log &amp;amp; docker run -p 10006:8501 -p 10007:8500 -v $root_path/brand_model:/models/brand_model -e MODEL_NAME=brand_model -t tensorflow/serving &amp;amp;&amp;gt; my_log1 &amp;amp; 访问示例： #访问例子 curl -H &amp;quot;Content-Type:application/json&amp;quot; -X POST http://localhost:10004/v1/models/corepw_model:predict -d &#39; &amp;gt; { &amp;gt; &amp;quot;instances&amp;quot;: [{ &amp;gt; &amp;quot;input_sentence_lengths&amp;quot;: 37, &amp;gt; &amp;quot;input_sentences&amp;quot;: [86, 1535, 0, 0, 0, 0, 0, 0, 0, 73, 41, 4, 0,</description>
+    </item>
     
     <item>
       <title>TFServing-gpu deploy</title>
@@ -133,15 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/wiki-gollum/</guid>
       <description>1.安装RVM https://rvm.io/ ssh admin@192.168.1.1 curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile 2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改) sed -i -e &#39;s/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g&#39; ~/.rvm/config/db 3.安装系统依赖包 CentOS yum install libicu libicu-devel zlib zlib-devel git 4.安装python 2.7+ (一般系统都有自带) 5.安装ruby 1.9.3+ rvm install 1.9.3 rvm list //可以查看目前已经安装的包 rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认 rvm remove 1.9.0 //卸载一个不用的版本 6.安装gollum gem install gollum 7.配置git仓库 ssh admin@192.168.1.2 cd /export/App mkdir wiki.git cd wiki.git git init --bare</description>
-    </item>
-    
-    <item>
-      <title>使用hugo搭建博客教程（二）</title>
-      <link>http://babifarm.com/post/2016/08/hosting-github-pages/</link>
-      <pubDate>Mon, 01 Aug 2016 07:40:35 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/hosting-github-pages/</guid>
-      <description>github pages部署个人博客 Github pages分为两种：一种是项目主页，每个项目都可以有一个；另一种是用户主页，一个用户只能有一个。 创建和部署 创建两个单独的git仓库repo： 在Github上创建repo &amp;lt;your-project&amp;gt;-hugo，托管Hugo的输入文件。 创建repo &amp;lt;username&amp;gt;.github.io，用于托管public/文件夹。 注意这里的repo名字一定要用自己的用户名，才会被当作是个人主页。 clone your-project $ git clone &amp;lt;&amp;lt;your-project&amp;gt;-hugo-url&amp;gt; eg: git clone https://github.com/&amp;lt;username&amp;gt;/&amp;lt;your-project&amp;gt;-hugo.git 进入your-project 目录 $ cd &amp;lt;your-project&amp;gt;-hugo 删掉public目录（这个目录每次运行Hugo都会再次生成，不用担心） $ rm -rf public 把public/目录添加为submodule 与.github.io同步 $ git submodule add git@github.com:&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public eg:git submodule add https://github.com/&amp;lt;username&amp;gt;/&amp;lt;username&amp;gt;.github.io.git public 添加.gitignore文件，文件中写public/，在同步-hugo时会忽略public文件夹 vim .gitignore public/ 部署脚本，方便提交github和部署网站： deploy.sh ``` #!/bin/bash source /etc/profile; echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot; msg=&amp;quot;rebuilding site `date`&amp;quot; echo $msg if [ $# -eq 1 ] then msg=&amp;quot;$1&amp;quot; fi # Push Hugo content git add -A git commit -m &amp;quot;$msg&amp;quot; git push origin master # Build the project.</description>
     </item>
     
   </channel>

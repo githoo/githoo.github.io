@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>flume load balance 验证 | babifarm.com</title>
+    <title>TFServing models deploy | babifarm.com</title>
   </head>
   <body>    
     <div id="wrap">
@@ -34,15 +34,15 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>flume load balance 验证</h1>
+      <h1>TFServing models deploy</h1>
       <div class="article-meta">
-        <span class="posttime">2016/08/02</span>
+        <span class="posttime">2018/12/15</span>
         
 <div class="tags">
   <ul>
     
     <li>
-      <a href="/tags/flume"><span></span>flume</a>
+      <a href="/tags/core"><span></span>core</a>
     </li>
     
   </ul>
@@ -65,140 +65,133 @@
 
   </header>
   <div class="content">
-    <p>1、验证说明</p>
+    
 
-<pre><code>数据从客户端发送给服务端，服务端进行负载均衡，发给两个处理节点：
+<h2 id="tensorflow-serving-多模型部署">Tensorflow Serving 多模型部署</h2>
 
-                               |----------&gt;node1----&gt;show
----test --&gt; client --&gt;server--&gt;|     
-                               |----------&gt;node2----&gt;show
+<h3 id="1-单模型方式">1、单模型方式</h3>
+
+<h4 id="多个单模型启动">多个单模型启动：</h4>
+
+<pre><code>#单模型
+root_path='/export/mtfs/TF'
+docker run -p 10004:8501 -p 10005:8500 -v $root_path/corepw_model:/models/corepw_model -e MODEL_NAME=corepw_model -t tensorflow/serving &amp;&gt; my_log &amp;
+
+docker run -p 10006:8501 -p 10007:8500 -v $root_path/brand_model:/models/brand_model -e MODEL_NAME=brand_model -t tensorflow/serving &amp;&gt; my_log1 &amp;
+
+
+
 </code></pre>
 
-<p>2、安装flume:</p>
+<h4 id="访问示例">访问示例：</h4>
 
-<pre><code>download ：http://flume.apache.org/download.html
-     tar -xvf apache-flume-1.6.0-bin.tar.gz
-修改conf/flume-env.sh配置文件,设置JAVA_HOME变量
+<pre><code>#访问例子
+curl -H &quot;Content-Type:application/json&quot; -X POST  http://localhost:10004/v1/models/corepw_model:predict -d '
+&gt; {
+&gt;     &quot;instances&quot;: [{
+&gt;         &quot;input_sentence_lengths&quot;: 37,
+&gt;         &quot;input_sentences&quot;: [86, 1535, 0, 0, 0, 0, 0, 0, 0, 73, 41, 4, 0, 10, 40, 368, 1888, 73, 41, 492, 86, 764, 202, 74, 96, 67, 447, 447, 39, 0, 8, 173, 29, 1, 758, 7, 41]
+&gt;     }],
+&gt;     &quot;signature_name&quot;: &quot;predict_tags&quot;
+&gt; } '
+
+{
+    &quot;predictions&quot;: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+}
+
+
+curl -H &quot;Content-Type:application/json&quot; -X POST  http://localhost:10006/v1/models/brand_model:predict -d '
+{
+    &quot;instances&quot;: [{
+        &quot;input_sentence_lengths&quot;: 37,
+        &quot;input_sentences&quot;: [86, 1535, 0, 0, 0, 0, 0, 0, 0, 73, 41, 4, 0, 10, 40, 368, 1888, 73, 41, 492, 86, 764, 202, 74, 96, 67, 447, 447, 39, 0, 8, 173, 29, 1, 758, 7, 41]
+    }],
+    &quot;signature_name&quot;: &quot;predict_tags&quot;
+} '
+
+{
+    &quot;predictions&quot;: [[1, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+}
+
 </code></pre>
 
-<p>3、测试环境：</p>
+<h3 id="2-多模型方式">2、多模型方式</h3>
 
-<pre><code>在一台服务器上进行测试
+<h4 id="多模型配置">多模型配置：</h4>
+
+<pre><code>#配置文件
+#/models/models.conf 
+
+model_config_list: {
+  config: {
+    name: &quot;corepw_model&quot;,
+    base_path: &quot;/models/corepw_model&quot;,
+    model_platform: &quot;tensorflow&quot;
+  },
+  config: {
+    name: &quot;brand_model&quot;,
+    base_path: &quot;/models/brand_model&quot;,
+    model_platform: &quot;tensorflow&quot;
+  }
+}
+
 </code></pre>
 
-<p>4、相关配置：</p>
+<h4 id="启动多模型">启动多模型：</h4>
 
-<pre><code>在路径conf/simple_load下新建如下文件
-  client.conf
-# Define a memory channel called c1 on a0 
-a0.channels.c1.type = memory 
-a0.channels.c1.capacity = 1000
-a0.channels.c1.transactionCapacity = 100   
+<pre><code>#多模型docker部署步骤
 
+containerid=`docker container ls |awk '{print $1}'|sed -n '2p'`
+docker container rm -f $containerid
+docker image rm tfserving_online
 
-a0.sources.r1.channels = c1 
-a0.sources.r1.type = netcat
-a0.sources.r1.bind = localhost
-a0.sources.r1.port = 43210
+docker run -d --name serving_base tensorflow/serving
+root_path='/export/mtfs/TF'
+docker cp $root_path/corepw_model serving_base:/models/corepw_model
+docker cp $root_path/brand_model serving_base:/models/brand_model
+docker cp $root_path/models.conf serving_base:/models/models.conf
+docker commit serving_base tfserving_online
+containerid=`docker container ls |awk '{print $1}'|sed -n '2p'`
+docker container rm -f $containerid
 
-#a0.sinks.k1.type = logger 
-a0.sinks.k1.type = avro   
-a0.sinks.k1.channel = c1 
-a0.sinks.k1.hostname = localhost
-a0.sinks.k1.port = 43211 
+docker run -p 10002:8501 -p 10003:8500 -t tfserving_online --model_config_file=/models/models.conf
 
-a0.channels = c1 
-a0.sources = r1 
-a0.sinks = k1 
-
-server.conf
-#Define a memory channel called c1 on a1 
-a1.channels = c1 
-a1.sources = r1 
-a1.sinks = k1 k2 
-a1.sinkgroups = g1 
-a1.sinkgroups.g1.sinks = k1 k2 
-a1.sinkgroups.g1.processor.type = load_balance 
-a1.sinkgroups.g1.processor.selector = round_robin 
-a1.sinkgroups.g1.processor.backoff = true 
-
-a1.channels.c1.type = memory   
-
-a1.sources.r1.channels = c1 
-a1.sources.r1.type = avro 
-a1.sources.r1.bind = 0.0.0.0 
-a1.sources.r1.port = 43211 
-
-a1.sinks.k1.channel = c1 
-a1.sinks.k1.type = avro 
-a1.sinks.k1.hostname = localhost
-a1.sinks.k1.port = 43212 
-a1.sinks.k2.channel = c1 
-a1.sinks.k2.type = AVRO 
-a1.sinks.k2.hostname = localhost
-a1.sinks.k2.port = 43213
-node1.conf
-#Define a memory channel called c1 on a2 
-a2.channels = c1 
-a2.sources = r1 
-a2.sinks = k1 
-a2.channels.c1.type = memory   
-
-a2.sources.r1.channels = c1 
-a2.sources.r1.type = avro 
-a2.sources.r1.bind = 0.0.0.0 
-a2.sources.r1.port = 43212
-
-a2.sinks.k1.channel = c1 
-a2.sinks.k1.type = logger 
-node2.conf
-#Define a memory channel called c1 on a3 
-a3.channels = c1 
-a3.sources = r1 
-a3.sinks = k1 
-a3.channels.c1.type = memory   
-
-a3.sources.r1.channels = c1 
-a3.sources.r1.type = avro 
-a3.sources.r1.bind = 0.0.0.0 
-a3.sources.r1.port = 43213
-
-a3.sinks.k1.channel = c1 
-a3.sinks.k1.type = logger 
 </code></pre>
 
-<p>5、测试命令：</p>
+<h4 id="访问示例-1">访问示例：</h4>
 
-<pre><code> 打开5个终端，分别顺序执行，node1,node2,server,client ,test
- 具体命令如下：
+<pre><code>#访问例子
+curl -H &quot;Content-Type:application/json&quot; -X POST  http://localhost:10002/v1/models/corepw_model:predict -d '
+{
+    &quot;instances&quot;: [{
+        &quot;input_sentence_lengths&quot;: 37,
+        &quot;input_sentences&quot;: [86, 1535, 0, 0, 0, 0, 0, 0, 0, 73, 41, 4, 0, 10, 40, 368, 1888, 73, 41, 492, 86, 764, 202, 74, 96, 67, 447, 447, 39, 0, 8, 173, 29, 1, 758, 7, 41]
+    }],
+    &quot;signature_name&quot;: &quot;predict_tags&quot;
+} '
 
-bin/flume-ng agent -n a3 -c conf/ -f conf/simple_load/node2.conf  -Dflume.root.logger=INFO,console
 
-2016-07-10 03:29:48,740 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 31 31 31                                        111 }
-2016-07-10 03:29:48,741 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 32 32 32                                        222 }
+curl -H &quot;Content-Type:application/json&quot; -X POST  http://localhost:10002/v1/models/brand_model:predict -d '
+{
+    &quot;instances&quot;: [{
+        &quot;input_sentence_lengths&quot;: 37,
+        &quot;input_sentences&quot;: [86, 1535, 0, 0, 0, 0, 0, 0, 0, 73, 41, 4, 0, 10, 40, 368, 1888, 73, 41, 492, 86, 764, 202, 74, 96, 67, 447, 447, 39, 0, 8, 173, 29, 1, 758, 7, 41]
+    }],
+    &quot;signature_name&quot;: &quot;predict_tags&quot;
+} '
 
-bin/flume-ng agent -n a2 -c conf/ -f conf/simple_load/node1.conf  -Dflume.root.logger=INFO,console
-
-2016-07-10 03:29:51,042 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 33 33 33                                        333 }
-2016-07-10 03:29:51,043 (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:94)] Event: { headers:{} body: 34 34 34                                        444 }
-
-bin/flume-ng agent -n a1 -c conf/ -f conf/simple_load/server.conf -Dflume.root.logger=INFO,console
-bin/flume-ng agent -n a0 -c conf/ -f conf/simple_load/client.conf -Dflume.root.logger=INFO,console
-
-nc localhost 43210
-111
-ok
-222
-ok
-333
-ok
-444
-ok
 </code></pre>
 
-<p>6、测试结论：</p>
+<h3 id="3-压测注意事项">3、压测注意事项</h3>
 
-<pre><code>测试端发送4条消息，经过server负载处理，node1和node2分别各处理2条消息，达到预期。
+<pre><code>QPS的影响因素：
+
+1、网络参数，考虑模型可以接受的准确率的情况下，尽量调小模型参数；
+
+2、输入数据长度，输入数据转换向量时使用自适应长度，减少不必要的计算；
+
 </code></pre>
 
   </div>
@@ -209,7 +202,7 @@ ok
   <ul>
     
     <li>
-      <a href="/tags/flume"><span></span>flume</a>
+      <a href="/tags/core"><span></span>core</a>
     </li>
     
   </ul>
@@ -230,7 +223,7 @@ ok
 
 
       
-<div class="ds-thread" data-thread-key="" data-title="flume load balance 验证" data-url="http://babifarm.com/post/2016/08/flume-load-balance/"></div>
+<div class="ds-thread" data-thread-key="" data-title="TFServing models deploy" data-url="http://babifarm.com/post/2018/12/tensorflow_Serving_models_deploy/"></div>
 
 
 
@@ -253,14 +246,9 @@ ok
         
         <div id="pagenavigation-next">
           <span class="pagenav-label">Previous</span>
-          <a href="http://babifarm.com/post/2016/08/bloom%20filter/">bloom filter 教程  </a>
+          <a href="http://babifarm.com/post/2018/09/TFServing-gpu&#43;deploy/">TFServing-gpu deploy</a>
         </div>
         
-        
-        <div id="pagenavigation-prev">
-          <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/flume-send-kafka/"> flume 整合 kafka </a>
-        </div>
         
       </div>
       
