@@ -18,7 +18,7 @@
     <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>thrift 教程 | babifarm.com</title>
+    <title>neo4j remote access config and deploy | babifarm.com</title>
   </head>
   <body>    
     <div id="wrap">
@@ -34,15 +34,15 @@
 <div class="article">
   <header>
     <div class="article-header">
-      <h1>thrift 教程</h1>
+      <h1>neo4j remote access config and deploy</h1>
       <div class="article-meta">
-        <span class="posttime">2016/08/02</span>
+        <span class="posttime">2018/12/23</span>
         
 <div class="tags">
   <ul>
     
     <li>
-      <a href="/tags/thrift"><span></span>thrift</a>
+      <a href="/tags/core"><span></span>core</a>
     </li>
     
   </ul>
@@ -67,131 +67,163 @@
   <div class="content">
     
 
-<h2 id="thrift-安装">thrift 安装</h2>
+<h1 id="neo4j远端访问配置及部署">neo4j远端访问配置及部署</h1>
 
-<p>thrift 版本：0.9.0</p>
+<h2 id="1-neo4j的安装及配置">1、neo4j的安装及配置</h2>
 
-<h3 id="thrift-依赖环境">thrift 依赖环境</h3>
+<pre><code>下载：neo4j-community-3.4.10-unix.tar.gz
+wget https://neo4j.com/artifact.php?name=neo4j-community-3.4.10-unix.tar.gz
 
-<pre><code class="language-xml"> A relatively POSIX-compliant *NIX system 
- Cygwin or MinGW can be used on Windows 
- g++ 3.3.5+ 
- boost 1.33.1+ (1.34.0 for building all tests) 
- Runtime libraries for lex and yacc might be needed for the compiler.  
+neo4j配置neo4j.conf:
+cat /export/soft/neo4j-community-3.4.10/conf/neo4j.conf |grep '\='|grep -v '#'
+ 
+dbms.directories.import=import
+dbms.security.auth_enabled=false
+dbms.connectors.default_listen_address=0.0.0.0
+dbms.connector.bolt.enabled=true
+dbms.connector.bolt.tls_level=OPTIONAL
+dbms.connector.bolt.listen_address=:7687
+dbms.connector.http.enabled=true
+dbms.connector.http.listen_address=:7474
+dbms.connector.https.enabled=true
+dbms.connector.https.listen_address=:7473
+dbms.tx_log.rotation.retention_policy=1 days
+dbms.jvm.additional=-XX:+UseG1GC
+dbms.jvm.additional=-XX:-OmitStackTraceInFastThrow
+dbms.jvm.additional=-XX:+AlwaysPreTouch
+dbms.jvm.additional=-XX:+UnlockExperimentalVMOptions
+dbms.jvm.additional=-XX:+TrustFinalNonStaticFields
+dbms.jvm.additional=-XX:+DisableExplicitGC
+dbms.jvm.additional=-Djdk.tls.ephemeralDHKeySize=2048
+dbms.jvm.additional=-Djdk.tls.rejectClientInitiatedRenegotiation=true
+dbms.windows_service_name=neo4j
+dbms.jvm.additional=-Dunsupported.dbms.udc.source=tarball
+
+neo4启动：
+/export/soft/neo4j-community-3.4.10/bin/neo4j start
 </code></pre>
 
-<h3 id="安装步骤">安装步骤</h3>
+<h2 id="2-nginx的安装及配置">2、nginx的安装及配置</h2>
 
-<h4 id="1-安装依赖">1、安装依赖</h4>
+<h3 id="nginx安装">nginx安装</h3>
 
-<pre><code class="language-xml">$  yum install automake libtool flex bison pkgconfig gcc-c++ boost-devel libevent-devel zlib-devel python-devel ruby-devel 
-Loaded plugins: fastestmirror
-Loading mirror speeds from cached hostfile
-c6-media | 4.0 kB 00:00
-Setting up Install Process
-Package automake-1.11.1-4.el6.noarch already installed and latest version
-Package 1:pkgconfig-0.23-9.1.el6.x86_64 already installed and latest version
-Package gcc-c++-4.4.7-3.el6.x86_64 already installed and latest version
-Package zlib-devel-1.2.3-29.el6.x86_64 already installed and latest version
-Resolving Dependencies
---&gt; Running transaction check
----&gt; Package bison.x86_64 0:2.4.1-5.el6 will be installed
----&gt; Package boost-devel.x86_64 0:1.41.0-11.el6_1.2 will be installed
---&gt; Processing Dependency: boost = 1.41.0-11.el6_1.2 for package: boost-devel-1.41.0-11.el6_1.2.x86_64
---&gt; Processing Dependency: libboost_wserialization.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64
---&gt; Processing Dependency: libboost_wserialization-mt.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64
-....................................
+<pre><code>#nginx安装
+wget 'http://nginx.org/download/nginx-1.9.2.tar.gz'
+tar xzvf nginx-1.9.2.tar.gz
+cd nginx-1.9.2
+./configure --prefix=/export/soft/nginx --with-stream
+make
+make install
+/export/soft/nginx/sbin/nginx -c /export/soft/nginx/conf/domains/pg.test.com
 </code></pre>
 
-<h4 id="2-安装thrift">2、安装thrift</h4>
+<h3 id="nginx配置">nginx配置</h3>
 
-<pre><code class="language-xml">  $ tar -zxvf thrift-0.9.0.tar.gz   
-  $ cd thrift-0.9.0   
-  $ ./configure
-  thrift 0.9.0
+<pre><code>#nginx配置 pg.test.com:
 
-  Building C++ Library ......... : no
-  Building C (GLib) Library .... : no
-  Building Java Library ........ : no
-  Building C# Library .......... : no 
-  ......
+#user  nobody;
+worker_processes  1;
 
-  Python Library:
-  Using Python .............. : /usr/bin/python
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    #include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+    #                  '$status $body_bytes_sent &quot;$http_referer&quot; '
+    #                  '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+    server {
+        listen       80;
+        server_name  pg.test.com;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+    
+
+        location /pg/ {
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header Host $http_host;
+                    proxy_redirect off;
+                    proxy_buffering off;
+                    proxy_pass http://127.0.0.1:7474/browser/;
+         }
+
+        location / {
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header Host $http_host;
+                    proxy_redirect off;
+                    proxy_buffering off;
+                    proxy_pass http://127.0.0.1:7687/;
+         }
+
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+    }
+
+}
+
+
+
+
 </code></pre>
 
-<p>继续执行以下步骤：</p>
+<h3 id="nginx启动">nginx启动</h3>
 
-<pre><code class="language-xml">   $ make (这步比较，耐心...)  
-   $ make install    
+<pre><code>/export/soft/nginx/sbin/nginx -c /export/soft/nginx/conf/domains/pg.test.com
 </code></pre>
 
-<p>检查是否安装成功：</p>
+<h2 id="3-neo4j-访问配置">3、neo4j 访问配置</h2>
 
-<pre><code class="language-xml">  $ thrift -version    
-  Thrift version 0.9.0 （显示这个说明安装成功）  
+<pre><code>#配置hosts
+10.10.188.88 pg.test.com
+
+#neo4j-browser: 
+http://pg.test.com/neo4j/
+
+Connect to Neo4j:
+Connect URL: bolt://pg.test.com:80
+Username:neo4j
+Password:neo4j
 </code></pre>
 
-<h3 id="生成java-类文件">生成Java 类文件</h3>
+<h2 id="4-neo4j访问语句">4、neo4j访问语句</h2>
 
-<h4 id="1-定义thrift-文件">1、定义thrift 文件</h4>
+<pre><code>- 查询产品词相似关系：
+MATCH p=(n:PwNode{name:'口罩'})-[r:similar]-&gt;() RETURN p LIMIT 25
 
-<pre><code class="language-xml">$ vim Hello.thrift   
-mespace java service.demo
- service Hello{
-  string helloString(1:string para)
-  i32 helloInt(1:i32 para)
-  bool helloBoolean(1:bool para)
-  void helloVoid()
-  string helloNull()
- }
 </code></pre>
-
-<h4 id="2-生成java-类文件">2、生成Java 类文件</h4>
-
-<pre><code class="language-xml"> $ thrift -r -gen java ./Hello.thrift  // -r对其中include的文件也生成服务代码 -gen是生成服务代码的语言  
-
-生成的Java 类文件：
- $ gen-java/service/demo/Hello.java
-</code></pre>
-
-<h3 id="maven-插件配置">maven 插件配置</h3>
-
-<p>maven 项目的结构：</p>
-
-<pre><code class="language-xml"> src
-  |--main
-  |--java
-  |--resource
-  |--thrift
-       |--client.thrift(thrift文件)  
-</code></pre>
-
-<p>插件配置</p>
-
-<pre><code class="language-xml"> &lt;plugin&gt;
-                &lt;groupId&gt;org.apache.thrift.tools&lt;/groupId&gt;
-                &lt;artifactId&gt;maven-thrift-plugin&lt;/artifactId&gt;
-                &lt;version&gt;0.1.12-SNAPSHOT&lt;/version&gt;
-                &lt;configuration&gt;
-                    &lt;thriftExecutable&gt;/usr/local/bin/thrift&lt;/thriftExecutable&gt;
-                &lt;/configuration&gt;
-                &lt;executions&gt;
-                    &lt;execution&gt;
-                        &lt;id&gt;thrift-sources&lt;/id&gt;
-                        &lt;phase&gt;generate-sources&lt;/phase&gt;
-                        &lt;goals&gt;
-                            &lt;goal&gt;compile&lt;/goal&gt;
-                        &lt;/goals&gt;
-                    &lt;/execution&gt;
-                &lt;/executions&gt;
-            &lt;/plugin&gt;
-</code></pre>
-
-<h3 id="官方文档">官方文档</h3>
-
-<p><a href="http://thrift.apache.org/tutorial/">http://thrift.apache.org/tutorial/</a><br />
-<a href="http://thrift.apache.org/tutorial/java">http://thrift.apache.org/tutorial/java</a></p>
 
   </div>
   <footer>
@@ -201,7 +233,7 @@ mespace java service.demo
   <ul>
     
     <li>
-      <a href="/tags/thrift"><span></span>thrift</a>
+      <a href="/tags/core"><span></span>core</a>
     </li>
     
   </ul>
@@ -222,7 +254,7 @@ mespace java service.demo
 
 
       
-<div class="ds-thread" data-thread-key="" data-title="thrift 教程" data-url="http://babifarm.com/post/2016/08/thrift/"></div>
+<div class="ds-thread" data-thread-key="" data-title="neo4j remote access config and deploy" data-url="http://babifarm.com/post/2018/12/neo4j_remote_access_config_and_deploy/"></div>
 
 
 
@@ -245,13 +277,13 @@ mespace java service.demo
         
         <div id="pagenavigation-next">
           <span class="pagenav-label">Previous</span>
-          <a href="http://babifarm.com/post/2016/08/scala-study/">Scala语言</a>
+          <a href="http://babifarm.com/post/2018/12/tensorflow_Serving_models_deploy/">TFServing models deploy</a>
         </div>
         
         
         <div id="pagenavigation-prev">
           <span class="pagenav-label">Next</span>
-          <a href="http://babifarm.com/post/2016/08/protobuf-vs-thrift/">Protobuf vs Thrift 性能测试</a>
+          <a href="http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/">TFServing model load test</a>
         </div>
         
       </div>

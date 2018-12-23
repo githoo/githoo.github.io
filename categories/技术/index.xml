@@ -6,8 +6,26 @@
     <description>Recent content in 技术 on babifarm.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Dec 2018 10:06:46 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 23 Dec 2018 10:06:46 -0700</lastBuildDate>
     <atom:link href="http://babifarm.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>TFServing model load test</title>
+      <link>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</link>
+      <pubDate>Sun, 23 Dec 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</guid>
+      <description>Tensorflow Serving model test Tensorflow model #Half Plus Two test tfserving-gpu #from :https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/docker.md mkdir -p /tmp/tfserving cd /tmp/tfserving git clone https://github.com/tensorflow/serving nvidia-docker run -p 18501:8501 \ -v /tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_gpu:/models/half_plus_two \ -e MODEL_NAME=half_plus_two -t tensorflow/serving:latest-gpu &amp;amp; curl -d &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; \ -X POST http://localhost:18501/v1/models/half_plus_two:predict curl -H &amp;quot;Content-Type:application/json&amp;quot; -X POST --data &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; -X POST http://localhost:18501/v1/models/half_plus_two:predict gatling loadtest import io.gatling.core.Predef._ import io.gatling.core.scenario.Simulation import io.gatling.http.Predef._ import scala.concurrent.duration._ class x_tfsgpuN extends</description>
+    </item>
+    
+    <item>
+      <title>neo4j remote access config and deploy</title>
+      <link>http://babifarm.com/post/2018/12/neo4j_remote_access_config_and_deploy/</link>
+      <pubDate>Sun, 23 Dec 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/12/neo4j_remote_access_config_and_deploy/</guid>
+      <description>neo4j远端访问配置及部署 1、neo4j的安装及配置 下载：neo4j-community-3.4.10-unix.tar.gz wget https://neo4j.com/artifact.php?name=neo4j-community-3.4.10-unix.tar.gz neo4j配置neo4j.conf: cat /export/soft/neo4j-community-3.4.10/conf/neo4j.conf |grep &#39;\=&#39;|grep -v &#39;#&#39; dbms.directories.import=import dbms.security.auth_enabled=false dbms.connectors.default_listen_address=0.0.0.0 dbms.connector.bolt.enabled=true dbms.connector.bolt.tls_level=OPTIONAL dbms.connector.bolt.listen_address=:7687 dbms.connector.http.enabled=true dbms.connector.http.listen_address=:7474 dbms.connector.https.enabled=true dbms.connector.https.listen_address=:7473 dbms.tx_log.rotation.retention_policy=1 days dbms.jvm.additional=-XX:+UseG1GC dbms.jvm.additional=-XX:-OmitStackTraceInFastThrow dbms.jvm.additional=-XX:+AlwaysPreTouch dbms.jvm.additional=-XX:+UnlockExperimentalVMOptions dbms.jvm.additional=-XX:+TrustFinalNonStaticFields dbms.jvm.additional=-XX:+DisableExplicitGC dbms.jvm.additional=-Djdk.tls.ephemeralDHKeySize=2048 dbms.jvm.additional=-Djdk.tls.rejectClientInitiatedRenegotiation=true dbms.windows_service_name=neo4j dbms.jvm.additional=-Dunsupported.dbms.udc.source=tarball neo4启动： /export/soft/neo4j-community-3.4.10/bin/neo4j start 2、nginx的安装及配置 nginx安装 #nginx安装 wget &#39;http://nginx.org/download/nginx-1.9.2.tar.gz&#39; tar xzvf nginx-1.9.2.tar.gz cd nginx-1.9.2 ./configure --prefix=/export/soft/nginx --with-stream make make install /export/soft/nginx/sbin/nginx -c /export/soft/nginx/conf/domains/pg.test.com nginx配置 #nginx配置 pg.test.com: #user nobody; worker_processes 1; #error_log logs/error.log; #error_log logs/error.log notice; #error_log logs/error.log</description>
+    </item>
     
     <item>
       <title>TFServing models deploy</title>
@@ -124,24 +142,6 @@
       
       <guid>http://babifarm.com/post/2016/08/thrift/</guid>
       <description>thrift 安装 thrift 版本：0.9.0 thrift 依赖环境 A relatively POSIX-compliant *NIX system Cygwin or MinGW can be used on Windows g++ 3.3.5+ boost 1.33.1+ (1.34.0 for building all tests) Runtime libraries for lex and yacc might be needed for the compiler. 安装步骤 1、安装依赖 $ yum install automake libtool flex bison pkgconfig gcc-c++ boost-devel libevent-devel zlib-devel python-devel ruby-devel Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile c6-media | 4.0 kB 00:00 Setting up Install Process Package automake-1.11.1-4.el6.noarch already installed and latest version Package 1:pkgconfig-0.23-9.1.el6.x86_64 already installed and latest version Package gcc-c++-4.4.7-3.el6.x86_64 already installed and latest version Package zlib-devel-1.2.3-29.el6.x86_64 already installed and latest version Resolving Dependencies --&amp;gt; Running transaction check ---&amp;gt; Package bison.x86_64 0:2.4.1-5.el6 will be installed ---&amp;gt; Package boost-devel.x86_64 0:1.41.0-11.el6_1.2 will be installed --&amp;gt; Processing Dependency: boost = 1.41.0-11.el6_1.2 for package: boost-devel-1.41.0-11.el6_1.2.x86_64 --&amp;gt; Processing Dependency: libboost_wserialization.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64 --&amp;gt; Processing Dependency: libboost_wserialization-mt.so.5()(64bit) for package: boost-devel-1.41.0-11.el6_1.2.x86_64 ....................................</description>
-    </item>
-    
-    <item>
-      <title>Scala语言</title>
-      <link>http://babifarm.com/post/2016/08/scala-study/</link>
-      <pubDate>Tue, 02 Aug 2016 08:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/scala-study/</guid>
-      <description>http://www.scala-lang.org 为什么要用Scala The central drive behind Scala is to make life easier and more productive for the developer 教程 http://www.scala-tour.com/#/welcomes http://www.runoob.com/scala/scala-collections.html</description>
-    </item>
-    
-    <item>
-      <title>wiki-gollum 安装说明</title>
-      <link>http://babifarm.com/post/2016/08/wiki-gollum/</link>
-      <pubDate>Tue, 02 Aug 2016 06:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2016/08/wiki-gollum/</guid>
-      <description>1.安装RVM https://rvm.io/ ssh admin@192.168.1.1 curl -L get.rvm.io | bash -s stable source ~/.bashrc source ~/.bash_profile 2.修改 RVM 的 Ruby 安装源到淘宝服务器(可以不改) sed -i -e &#39;s/ftp\.ruby-lang\.org\/pub\/ruby/ruby\.taobao\.org\/mirrors\/ruby/g&#39; ~/.rvm/config/db 3.安装系统依赖包 CentOS yum install libicu libicu-devel zlib zlib-devel git 4.安装python 2.7+ (一般系统都有自带) 5.安装ruby 1.9.3+ rvm install 1.9.3 rvm list //可以查看目前已经安装的包 rvm use 1.9.3 --default //如果有多个版本时设置指定版为默认 rvm remove 1.9.0 //卸载一个不用的版本 6.安装gollum gem install gollum 7.配置git仓库 ssh admin@192.168.1.2 cd /export/App mkdir wiki.git cd wiki.git git init --bare</description>
     </item>
     
   </channel>
