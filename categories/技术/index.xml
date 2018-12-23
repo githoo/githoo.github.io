@@ -10,21 +10,21 @@
     <atom:link href="http://babifarm.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>TFServing model load test</title>
-      <link>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</link>
-      <pubDate>Sun, 23 Dec 2018 10:06:46 -0700</pubDate>
-      
-      <guid>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</guid>
-      <description>Tensorflow Serving model test Tensorflow model #Half Plus Two test tfserving-gpu #from :https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/docker.md mkdir -p /tmp/tfserving cd /tmp/tfserving git clone https://github.com/tensorflow/serving nvidia-docker run -p 18501:8501 \ -v /tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_gpu:/models/half_plus_two \ -e MODEL_NAME=half_plus_two -t tensorflow/serving:latest-gpu &amp;amp; curl -d &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; \ -X POST http://localhost:18501/v1/models/half_plus_two:predict curl -H &amp;quot;Content-Type:application/json&amp;quot; -X POST --data &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; -X POST http://localhost:18501/v1/models/half_plus_two:predict gatling loadtest import io.gatling.core.Predef._ import io.gatling.core.scenario.Simulation import io.gatling.http.Predef._ import scala.concurrent.duration._ class x_tfsgpuN extends</description>
-    </item>
-    
-    <item>
       <title>neo4j remote access config and deploy</title>
       <link>http://babifarm.com/post/2018/12/neo4j_remote_access_config_and_deploy/</link>
       <pubDate>Sun, 23 Dec 2018 10:06:46 -0700</pubDate>
       
       <guid>http://babifarm.com/post/2018/12/neo4j_remote_access_config_and_deploy/</guid>
       <description>neo4j远端访问配置及部署 1、neo4j的安装及配置 下载：neo4j-community-3.4.10-unix.tar.gz wget https://neo4j.com/artifact.php?name=neo4j-community-3.4.10-unix.tar.gz neo4j配置neo4j.conf: cat /export/soft/neo4j-community-3.4.10/conf/neo4j.conf |grep &#39;\=&#39;|grep -v &#39;#&#39; dbms.directories.import=import dbms.security.auth_enabled=false dbms.connectors.default_listen_address=0.0.0.0 dbms.connector.bolt.enabled=true dbms.connector.bolt.tls_level=OPTIONAL dbms.connector.bolt.listen_address=:7687 dbms.connector.http.enabled=true dbms.connector.http.listen_address=:7474 dbms.connector.https.enabled=true dbms.connector.https.listen_address=:7473 dbms.tx_log.rotation.retention_policy=1 days dbms.jvm.additional=-XX:+UseG1GC dbms.jvm.additional=-XX:-OmitStackTraceInFastThrow dbms.jvm.additional=-XX:+AlwaysPreTouch dbms.jvm.additional=-XX:+UnlockExperimentalVMOptions dbms.jvm.additional=-XX:+TrustFinalNonStaticFields dbms.jvm.additional=-XX:+DisableExplicitGC dbms.jvm.additional=-Djdk.tls.ephemeralDHKeySize=2048 dbms.jvm.additional=-Djdk.tls.rejectClientInitiatedRenegotiation=true dbms.windows_service_name=neo4j dbms.jvm.additional=-Dunsupported.dbms.udc.source=tarball neo4启动： /export/soft/neo4j-community-3.4.10/bin/neo4j start 2、nginx的安装及配置 nginx安装 #nginx安装 wget &#39;http://nginx.org/download/nginx-1.9.2.tar.gz&#39; tar xzvf nginx-1.9.2.tar.gz cd nginx-1.9.2 ./configure --prefix=/export/soft/nginx --with-stream make make install /export/soft/nginx/sbin/nginx -c /export/soft/nginx/conf/domains/pg.test.com nginx配置 #nginx配置 pg.test.com: #user nobody; worker_processes 1; #error_log logs/error.log; #error_log logs/error.log notice; #error_log logs/error.log</description>
+    </item>
+    
+    <item>
+      <title>TFServing model load test</title>
+      <link>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</link>
+      <pubDate>Sat, 22 Dec 2018 10:06:46 -0700</pubDate>
+      
+      <guid>http://babifarm.com/post/2018/12/tensorflow_serving_model_loadtest/</guid>
+      <description>Tensorflow Serving model test Tensorflow model #Half Plus Two test tfserving-gpu #from :https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/docker.md mkdir -p /tmp/tfserving cd /tmp/tfserving git clone https://github.com/tensorflow/serving nvidia-docker run -p 18501:8501 \ -v /tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_gpu:/models/half_plus_two \ -e MODEL_NAME=half_plus_two -t tensorflow/serving:latest-gpu &amp;amp; curl -d &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; \ -X POST http://localhost:18501/v1/models/half_plus_two:predict curl -H &amp;quot;Content-Type:application/json&amp;quot; -X POST --data &#39;{&amp;quot;instances&amp;quot;: [1.0, 2.0, 5.0]}&#39; -X POST http://localhost:18501/v1/models/half_plus_two:predict gatling loadtest import io.gatling.core.Predef._ import io.gatling.core.scenario.Simulation import io.gatling.http.Predef._ import scala.concurrent.duration._ class x_tfsgpuN extends</description>
     </item>
     
     <item>
