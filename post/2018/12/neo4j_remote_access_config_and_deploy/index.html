@@ -220,8 +220,8 @@ Password:neo4j
 
 <h2 id="4-neo4j访问语句">4、neo4j访问语句</h2>
 
-<pre><code>- 查询产品词相似关系：
-MATCH p=(n:PwNode{name:'口罩'})-[r:similar]-&gt;() RETURN p LIMIT 25
+<pre><code>- 查询关系：
+MATCH p=(n:Node{name:'手机'})-[]-&gt;() RETURN p LIMIT 25
 
 </code></pre>
 
